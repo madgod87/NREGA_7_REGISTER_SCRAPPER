@@ -1,0 +1,839 @@
+<html xmlns="http://www.w3.org/1999/xhtml"><script type="text/javascript">// Promises 													
+    var _tp_promises = {};														
+    //Get Message From content script 											
+    window.addEventListener("message", function(event) { 						
+            if(event.source !== window) return;			 						
+            if(event.data.src && (event.data.src === "content.js")) { 			
+                console.log("Page received: "); 								
+                console.log(event.data); 										
+                // Get the promise												
+                if(event.data.nonce) {											
+                     var p = _tp_promises[event.data.nonce]; 					
+                     // resolve													
+                     if(event.data.status_cd === 1){							
+                        p.resolve(event.data.result);							
+                     }else{														
+                         p.reject(new Error(event.data.result));					
+                     }															
+                     delete _tp_promises[event.data.nonce];						
+                }else {  														
+                    console.log("No nonce in event msg");						
+                }																
+            }																	
+        });																		
+                                                                                
+        var SignerDigital= new TpCrypto();										
+        function TpCrypto (){													
+                                                                                
+        var OSName = GetOS();													
+        var OSSupported = (OSName == "Windows" || OSName == "Linux") ? true : false; 
+        function nonce() {														
+          var val = ""; 														
+          var hex = "abcdefghijklmnopqrstuvwxyz0123456789";	         			
+          for(var i = 0; i < 16; i++)							     			
+            val += hex.charAt(Math.floor(Math.random() * hex.length));			
+          return val;															
+        }																		
+                                                                                
+        function messagePromise(msg) { 											
+            return new Promise(async function(sdResolve, sdReject) { 			
+                if (msg["action"] == "GenCSR" || msg["action"] == "ImportCER")	
+                {																
+                   if (!OSSupported)											
+                   {																
+                     sdReject(new Error(OSName + " OS Not Supported."));	
+                     return;														
+                   }																
+                    if(!(await checkSDEnrolledCA(msg["certIssuer"])))			
+                    {															
+                        sdReject(new Error("This Certifying Authority is not enrolled in Signer.Digital Browser Extension for Certificate Enrollment/Download. Contact your Certifying Authority."));	
+                        return;													
+                    }															
+                }																
+                // amend with necessary metadata 								
+                msg["nonce"] = nonce(); 										
+                msg["src"] = "user_page.js"; 									
+                msg["browser"] = "chrome"; 										
+                // send message 												
+                window.postMessage(msg, "*"); 									
+                // and store promise callbacks 									
+                _tp_promises[msg.nonce] = {										
+                    resolve: sdResolve, 										
+                    reject: sdReject				 							
+                }; 																
+            }); 																
+        }																		
+                                                                                
+        async function checkSDEnrolledCA(certIssuer)							
+        {																		
+            var caList = ["AD5HAb+Ij2mmK1hTWpGGdK/xbGLtpQDerMJx35zmSJI=",	//CISPL Signer.Digital DEMO	
+                //add Enrolled CA to this list	
+                          "VQyiIqC/d6dSmSBWTgqLxDZzb5x9eQMKBlO/MdxjeqM=",	//SafeScrypt sub-CA for RCAI 
+                          "s2fPQ4sVgi70hCFo9S5W2HIRXT7TXsX2CwNBcAHxdPk=",	//UAT - PantaSign CA 2014 
+                          "tDnFOxBvx6hejWvsmFpNC6CulfWvekxWHiJKPac65Rw=",	//PantaSign CA 2014 
+                          "c78CYT7ESNyRXOOuIlAW2tjCb2mJabS3Z3mAC4JFrDM=",	//PantaSign CA 
+                          "EFxTc4imOiZoKULp/I4rzSzsF20q2jFk6SJaC6skH6c=",	//Verasys CA 
+                          "IT/kNq1QApC7NaIMu3VKAib4cZF0ARInXp3zCDa2SIM="];	//IDSign sub CA for Consumers
+            const sha256OfIssuer = await SDGetSha256(certIssuer);				
+            if (caList.includes(sha256OfIssuer))								
+                return true;													
+            else																
+                return false;													
+        }																		
+        async function SDGetSha256(message)										
+        {																		
+            // encode as UTF-8													
+            const msgBuffer = new TextEncoder().encode(message);				
+            // hash the message													
+            const hashBuffer = await crypto.subtle.digest("SHA-256", msgBuffer);
+            const bytes = new Uint8Array(hashBuffer);							
+            var binary = "";													
+            for (var i = 0; i < bytes.byteLength; i++) {						
+                binary += String.fromCharCode(bytes[i]);						
+            }																	
+            return window.btoa(binary);											
+        };																		
+                                                                                
+        //Extension Action Methods												
+        this.signGstHash = function(hash, certThumbPrint = "", x509RevocationMode = 0){					
+            var msg= { action:"GSTReturnSign", hash:hash, certThumbPrint:certThumbPrint, x509RevocationMode:x509RevocationMode };	
+            return messagePromise(msg);											
+        }																		
+        this.signITHash = function(hash, PAN, certThumbPrint = "", x509RevocationMode = 0){				
+            var msg= { action:"ITReturnSign", hash:hash, PAN:PAN, certThumbPrint:certThumbPrint, x509RevocationMode:x509RevocationMode};	
+            return messagePromise(msg);											
+        }																		
+        this.signIceGate = function(b64Data, certThumbPrint = "", x509RevocationMode = 0){				
+            var msg= { action:"IceGateSignJson", b64Data:b64Data, certThumbPrint:certThumbPrint, x509RevocationMode:x509RevocationMode};	
+            return messagePromise(msg);											
+        }																		
+        this.getSelectedCertificate = function(certThumbPrint = "", showExpired = false, keyUsageFilter = 128, x509RevocationMode = 0){					
+            var msg= { action:"GetSelCertFromToken", certThumbPrint:certThumbPrint, showExpired:showExpired, keyUsageFilter:keyUsageFilter, x509RevocationMode:x509RevocationMode};		
+            return messagePromise(msg);											
+        }																		
+        this.signPdfHash = function(hash,certThumbPrint,certAlgorithm, x509RevocationMode = 0){			
+            var msg= { action:"PdfSignFromToken", hash:hash,certThumbPrint:certThumbPrint,hashAlgorithm:certAlgorithm, x509RevocationMode:x509RevocationMode};	
+            return messagePromise(msg);											
+        }																		
+        this.signAuthToken = function(authtoken, certAlgorithm, certThumbPrint = "", showExpired = false, x509RevocationMode = 0){			
+            var msg= { action:"SignAuthToken", authToken:authtoken, hashAlgorithm:certAlgorithm, certThumbPrint:certThumbPrint, showExpired:showExpired, x509RevocationMode:x509RevocationMode};	
+            return messagePromise(msg);											
+        }																		
+        this.signHash = function(hash, certAlgorithm, certThumbPrint = "", x509RevocationMode = 0){		
+            var msg= { action:"SignHash", hash:hash, hashAlgorithm:certAlgorithm, certThumbPrint:certThumbPrint };	
+            return messagePromise(msg);											
+        }																		
+        this.signHashCms = function(hash, certAlgorithm, certIncludeOptions = 2, certThumbPrint = "", x509RevocationMode = 0){		
+            var msg= { action:"SignHashCms", hash:hash, hashAlgorithm:certAlgorithm, certIncludeOptions:certIncludeOptions, certThumbPrint:certThumbPrint, x509RevocationMode:x509RevocationMode};	
+            return messagePromise(msg);											
+        }																		
+        this.signXML = function(xmlDoc, xmlSignParms, certThumbPrint, x509RevocationMode = 0){			
+            var msg= { action:"SignXML", xmlDoc:xmlDoc, xmlSignParms:xmlSignParms, certThumbPrint:certThumbPrint, x509RevocationMode:x509RevocationMode};	
+            return messagePromise(msg);											
+        }																		
+        this.encryptB64Data = function(b64Data, useOAEPPadding, certThumbPrint = "", showExpired = false, keyUsageFilter = 32, x509RevocationMode = 0){			
+            var msg= { action:"EncryptB64Data", b64Data:b64Data, useOAEPPadding:useOAEPPadding, certThumbPrint:certThumbPrint, showExpired:showExpired, keyUsageFilter:keyUsageFilter, x509RevocationMode:x509RevocationMode};	
+            return messagePromise(msg);											
+        }																		
+        this.decryptB64Data = function(b64Data, useOAEPPadding, certThumbPrint = "", showExpired = false, keyUsageFilter = 32, x509RevocationMode = 0){			
+            var msg= { action:"DecryptB64Data", b64Data:b64Data, useOAEPPadding:useOAEPPadding, certThumbPrint:certThumbPrint, showExpired:showExpired, keyUsageFilter:keyUsageFilter, x509RevocationMode:x509RevocationMode};	
+            return messagePromise(msg);											
+        }																		
+        this.getPCSCReaders = function(onlyConnected = true){				
+            var msg= { action:"GetPCSCReaders", onlyConnected:onlyConnected};			
+            return messagePromise(msg);											
+        }																		
+        this.genCSR = function(PKCS11Lib, certSubject, certIssuer, keyBits = 2048, hashAlgorithm = "SHA256", forceUserPinChangeIfDefault = false, extensions = null){				
+            var msg= { action:"GenCSR", PKCS11Lib:PKCS11Lib, certSubject:certSubject, certIssuer:certIssuer, keyBits:keyBits, hashAlgorithm:hashAlgorithm, forceUserPinChangeIfDefault:forceUserPinChangeIfDefault, extensions:extensions};			
+            return messagePromise(msg);											
+        }																		
+        this.importCer = function(PKCS11Lib, b64Payload, certIssuer){		
+            var msg= { action:"ImportCER", PKCS11Lib:PKCS11Lib, b64Data:b64Payload, certIssuer:certIssuer};		
+            return messagePromise(msg);											
+        }																		
+        this.getHostDetails = function(){										
+            var msg= { action:"GetHostDetails"};								
+            return messagePromise(msg);											
+        }																		
+        this.sm = function(msg){												
+            return messagePromise(msg);											
+        }																		
+        this.OSName = GetOS();													
+        this.OSSupported = (this.OSName == "Windows" || this.OSName == "Linux") ? true : false; 
+        this.getPkcsLibByProvider = function(ProviderName)								
+            {																	
+                let winHashMap = new Map([										
+                    ["EnterSafe ePass2003 CSP v2.0", "eps2003csp11v2.dll"],		
+                    ["eToken Base Cryptographic Provider", "eTPKCS11.dll"],		
+                    ["PROXKey CSP India V1.0", "SignatureP11.dll"],				
+                    ["Bit4id Universal Middleware Provider", "bit4ipki.dll"],	
+                    ["mToken CryptoID CSP", "CryptoIDA_pkcs11.dll"] 			
+                ]);																
+                let linuxHashMap = new Map([									
+                    ["EnterSafe ePass2003 CSP v2.0", "libcastle_v2.so.1.0.0"],					
+                    ["eToken Base Cryptographic Provider", "libeTPkcs11.so"],				
+                    ["PROXKey CSP India V1.0", "libwdpkcs_SignatureP11.so"],							
+                    ["mToken CryptoID CSP", "libcryptoid_pkcs11.so"]							
+                ]);																
+                var providerNotEnrolledMsg = "Provider Not enrolled in Signer.Digital Browser Extension. Can still be used by passing pkcs#11 driver lib name in PKCS11Lib param."	 
+                if (this.OSName == "Windows") {										
+                    if (ProviderName.startsWith("Microsoft"))					
+                        return ProviderName;									
+                    else if (winHashMap.has(ProviderName))				
+                        return winHashMap.get(ProviderName);					
+                    else														
+                        return providerNotEnrolledMsg; 	
+                }																
+                if (this.OSName = "Linux") {											
+                    if (linuxHashMap.has(ProviderName))							
+                        return linuxHashMap.get(ProviderName);					
+                    else														
+                        return providerNotEnrolledMsg; 							
+                }																
+                else {															
+                    return "OS Not Supported";									
+                }																
+            }																	
+        this.getPkcsLibBySCName = function(SCName)								
+            {																	
+                let winHashMap = new Map([										
+                    ["HyperSecu ePass2003", "eps2003csp11v2.dll"],				
+                    ["SafeNet eToken", "eTPKCS11.dll"],							
+                    ["PROXKey Watchdata", "SignatureP11.dll"],					
+                    ["Bit4id tokenME", "bit4ipki.dll"],							
+                    ["Longmai mToken", "CryptoIDA_pkcs11.dll"],					
+                    ["Gemalto USB", ".dll"]						
+                ]);																
+                let linuxHashMap = new Map([									
+                    ["HyperSecu ePass2003", "libcastle_v2.so.1.0.0"],					
+                    ["SafeNet eToken", "/usr/lib/libeTPkcs11.so"],				
+                    ["PROXKey Watchdata", "/usr/lib/WatchData/ProxKey/lib/libwdpkcs_SignatureP11.so"],							
+                    ["Longmai mToken", "/opt/CryptoIDATools/bin/lib/libcryptoid_pkcs11.so"]							
+                ]);																
+                var SCNotEnrolledMsg = "Smartcard Not enrolled in Signer.Digital Browser Extension. Can still be used by passing pkcs#11 driver lib name in PKCS11Lib param."	 
+                if (this.OSName == "Windows") {										
+                    if (SCName == "Windows Certificate Store")					
+                        return "Microsoft Enhanced RSA and AES Cryptographic Provider";									
+                    else if (winHashMap.has(SCName))				
+                        return winHashMap.get(SCName);					
+                    else														
+                        return SCNotEnrolledMsg; 	
+                }																
+                if (this.OSName = "Linux") {											
+                    if (linuxHashMap.has(SCName))							
+                        return linuxHashMap.get(SCName);					
+                    else														
+                        return SCNotEnrolledMsg; 							
+                }																
+                else {															
+                    return "OS Not Supported";									
+                }																
+            }																	
+        this.getSCNameByReaderName = function(ReaderName)						
+            {																	
+                let winHashMap = new Map([										
+                    ["HYPERSECU USB TOKEN 0", "HyperSecu ePass2003"],			
+                    ["FT ePass2003Auto 0", "HyperSecu ePass2003"],				
+                    ["FS USB Token 0", "HyperSecu ePass2003"],					
+                    ["feitian ePass2003 0", "HyperSecu ePass2003"],             
+                    ["AKS ifdh 0", "SafeNet eToken"],							
+                    ["AKS ifdh 1", "SafeNet eToken"],							
+                    ["SafeNet Token JC 0", "SafeNet eToken"],					
+                    ["SafeNet Token JC 1", "SafeNet eToken"],					
+                    ["Aladdin Token JC 0", "SafeNet eToken"],					
+                    ["Aladdin Token JC 1", "SafeNet eToken"],					
+                    ["Watchdata WDIND USB CCID Key 0", "PROXKey Watchdata"],	
+                    ["Bit4id tokenME FIPS 0", "Bit4id tokenME"],				
+                    ["Longmai mToken CryptoIDA 0", "Longmai mToken"],			
+                    ["Gemplus USB SmartCard Reader 0", "Gemalto USB"]			
+                ]);																
+                let linuxHashMap = new Map([									
+                    ["Feitian ePass2003", "HyperSecu ePass2003"],				
+                    ["FT ePass2003Auto", "HyperSecu ePass2003"],				
+                    ["SafeNet eToken 5100", "SafeNet eToken"],					
+                    ["Watchdata USB Key", "PROXKey Watchdata"]					
+                ]);																
+                if (this.OSName == "Windows") {									
+                    if (winHashMap.has(ReaderName))								
+                        return winHashMap.get(ReaderName);						
+                    else														
+                        return ReaderName; 	
+                }																
+                if (this.OSName = "Linux") {											
+                    if (linuxHashMap.has(ReaderName))							
+                        return linuxHashMap.get(ReaderName);					
+                    else														
+                        return ReaderName; 							
+                }																
+                else {															
+                    return ReaderName;									
+                }																
+            }																	
+            function GetOS()													
+            {																	
+                if (navigator.appVersion.indexOf("Win") != -1) return "Windows";
+                else if (navigator.appVersion.indexOf("Mac") != -1) return "MacOS";	
+                else if (navigator.appVersion.indexOf("Linux") != -1) return "Linux";
+                else if (navigator.appVersion.indexOf("X11") != -1) return "UNIX";	
+                else return "Unknown OS";										
+            }																	
+    }//End of TpCrypto class													
+    </script><head><title>
+        Mahatma Gandhi National Rural Employment Guarantee Act (MGNREGA)
+    </title><link rel="shortcut icon" href="images/title_logo.jpg">
+    </head>
+    <body topmargin="0" leftmargin="0" rightmargin="0" bgcolor="Floralwhite">
+      <form method="post" action="./employment_register_report_a.aspx?fin_year=2021-2022&amp;state_code=32&amp;district_code=3201&amp;block_code=3201009&amp;panchayat_code=3201009009&amp;State_name=&amp;District_name=NADIA&amp;Block_name=KRISHNAGAR-I&amp;panchayat_name=DOGACHI&amp;Digest=lrhEIrkE2X+7H81pro2RzQ" id="form1">
+    <div class="aspNetHidden">
+    <input type="hidden" name="__EVENTTARGET" id="__EVENTTARGET" value="">
+    <input type="hidden" name="__EVENTARGUMENT" id="__EVENTARGUMENT" value="">
+    <input type="hidden" name="__LASTFOCUS" id="__LASTFOCUS" value="">
+    <input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="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">
+    </div>
+    
+    <script type="text/javascript">
+    //<![CDATA[
+    var theForm = document.forms['form1'];
+    if (!theForm) {
+        theForm = document.form1;
+    }
+    function __doPostBack(eventTarget, eventArgument) {
+        if (!theForm.onsubmit || (theForm.onsubmit() != false)) {
+            theForm.__EVENTTARGET.value = eventTarget;
+            theForm.__EVENTARGUMENT.value = eventArgument;
+            theForm.submit();
+        }
+    }
+    //]]>
+    </script>
+    
+    
+    <div class="aspNetHidden">
+    
+        <input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="BD0A41A2">
+        <input type="hidden" name="__VIEWSTATEENCRYPTED" id="__VIEWSTATEENCRYPTED" value="">
+        <input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="ZA7h9+C7+aHp3iWGdm18B/PVE2YOP4iGkE9fnLgS9RdhHMy5roJkwRrRE402v/k4U3ob3usLCIp8mov+p4erfEH28Kzv59xzc72/d1GQc8SamU8nQdTqdjU+Lfrt/zE+/XCCWYLSLJuRDTCPNP6ldgLLJuIvRCMESEWTPcdTNRdawFmlNQyCOCK+kXXJT5cAs8Quz48slMobWWqVHqtV5x2X3lQ/Us53r1X4rE0APMKsmPlW/o6PVMbxikQC64IOVYKlKThuvUEuDoCui/OlmEzZ7jyM8xckiwEkZOurMcodSzjuiGLUcr/ZunxzukNPT6BRsTeLKEJAMR2v/RWBd4lfIZHdZuvuaGDFDoBwmPUSg3xkH+BWBc9GG6Ft5A9gKu8H/tXL+eOFxMq+ZV5SLlTGT8Mn5uTzodUS/uIK/xjo97M5XplyBL9TUApAXDjBEWf1Y9ppEqt9bBeHcuwsoQ==">
+    </div>
+        <div>
+            
+             <table border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#ffe7b7">
+                <tbody><tr>
+                    <td width="17%" bgcolor="#ffffd5">
+                        <font size="6" color="#bd1725" face="verdana"><b></b></font>
+                    </td>
+                    <td width="83%" align="right">
+                        <b><font face="Arial" color="Black" size="2">Govt. of India<br>
+                            Ministry of Rural Development<br>
+                            Department of Rural Development</font></b>
+                    </td>
+                </tr>
+                </tbody></table>
+                <table border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#FFBB55">
+                <tbody><tr>
+                    <td width="50%" bgcolor="#ffffd5" height="21" align="left">
+                        <font face="Arial" size="2" color="#bd1725"><b>
+                           The Mahatma Gandhi National Rural Employment Guarantee Act </b></font>
+                    </td>
+                    <td width="50%" bgcolor="#ffffd5" height="21" align="right">
+                        <font face="Arial" size="2" color="#bd1725">
+                            29-May-2022 07:14:32 PM&nbsp;</font>
+                    </td>
+                </tr>
+            </tbody></table>
+            
+             
+    <style type="text/css" media="all">
+     @import url( http://nrega.nic.in/hp.css );
+    </style>
+    <style type="text/css" media="print">
+       .no-print { display: none; }
+       table td 
+       {
+           height:10px;
+       }
+       tr
+       {
+           height:10px;
+       }
+       p{
+        line-height: 1.4;
+    }
+    p.ex {
+        height: 20px;
+        width: 20px;
+    }
+     p{
+            margin-top: 10px;
+            margin-bottom: 10px;
+            margin-left: 10px;
+            margin-right: 10px;
+       }
+       p {
+        border-style: solid;
+        border-color: transparent;
+    }
+    </style>
+    <center>
+    
+    
+    <table border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#87CEFA">
+            <tbody><tr valign="top">
+                           <td width="7%" bgcolor="#87CEFA" align="right">
+                              <b> 
+                               <a id="ContentPlaceHolder1_back" tabindex="13" href="javascript:history.go(-1);">Back</a>&nbsp;&nbsp;
+                              <a id="ContentPlaceHolder1_home" href="Progofficer/PoIndexFrame.aspx?District_Code=3201&amp;district_name=NADIA&amp;state_name=WEST BENGAL&amp;state_Code=32&amp;finyear=2021-2022&amp;check=1&amp;block_name=KRISHNAGAR-I&amp;Block_Code=3201009&amp;source=block">Home</a></b>         
+                </td>
+            </tr>
+        </tbody></table>
+    
+    
+    <font size="4"><b> <span id="ContentPlaceHolder1_Label1">REGISTER No.1 Part-C- Job Card(Application,Registration and Issue) and Household Employment Register</span></b></font>
+    <br><br>
+    
+    <div class="no-print">
+    <table width="100%">
+    <tbody><tr>
+       
+    <td width="25%" align="left">
+    Financial Year:<select name="ctl00$ContentPlaceHolder1$ddl_fin" onchange="javascript:setTimeout('__doPostBack(\'ctl00$ContentPlaceHolder1$ddl_fin\',\'\')', 0)" id="ContentPlaceHolder1_ddl_fin" style="width:50%;">
+        <option value="2022-2023">2022-2023</option>
+        <option selected="selected" value="2021-2022">2021-2022</option>
+        <option value="2020-2021">2020-2021</option>
+        <option value="2019-2020">2019-2020</option>
+    
+    </select>
+    </td>
+    
+     <td width="25%" align="left"><b>Quarter:</b>&nbsp;&nbsp;<select name="ctl00$ContentPlaceHolder1$ddl_quarter" onchange="javascript:setTimeout('__doPostBack(\'ctl00$ContentPlaceHolder1$ddl_quarter\',\'\')', 0)" id="ContentPlaceHolder1_ddl_quarter" style="width:50%;">
+        <option value="(4,5,6)">Quarter I(April,May,June)</option>
+        <option selected="selected" value="(7,8,9)">Quarter II(July,August,September)</option>
+        <option value="(10,11,12)">Quarter III(October,Novemeber,Decemeber)</option>
+        <option value="(1,2,3)">Quarter IV(January,February,March)</option>
+    
+    </select>
+     </td>
+     
+                      
+    
+      <td width="25%" align="left"><b>Rows in single page:</b>&nbsp;&nbsp;<select name="ctl00$ContentPlaceHolder1$ddrows" onchange="javascript:setTimeout('__doPostBack(\'ctl00$ContentPlaceHolder1$ddrows\',\'\')', 0)" id="ContentPlaceHolder1_ddrows" style="width:30%;">
+        <option selected="selected" value="10">10</option>
+        <option value="20">20</option>
+        <option value="30">30</option>
+        <option value="40">40</option>
+    
+    </select>
+                    </td>
+    
+    </tr>
+    
+    
+    
+    <tr>
+    <td colspan="3" align="center"><span id="ContentPlaceHolder1_lbl_head"><b>State :</b>     <b>District :</b>  NADIA    <b>Block  : </b> KRISHNAGAR-I  <b>Panchayat  : </b> DOGACHI</span></td>
+    
+     
+    </tr>
+    </tbody></table>
+    </div>
+    
+    <br>
+    <div id="ContentPlaceHolder1_RepPr">
+    
+    
+    
+    
+                  <table align="center" width="99%" border="1" bordercolor="#EBEBEB" style="border-collapse:collapse " cellspacing="0">
+                <tbody><tr bgcolor="#82b4ff">
+    
+                
+                    <td align="center"><b>S No.</b></td>
+                  <td align="center"><b>Job Card Numbers issued by GP</b></td>
+                <td align="center"><b>Date on which Job Card issued</b></td>
+                 <td align="center"><b>Head of the HH/Other members</b></td>
+                <td align="center"><b>Age/Sex</b></td>
+                  <td align="center"><b>Relationship with head oh HH</b></td>
+                   <td align="center"><b>SC/ST/Others</b></td>
+                <td align="center"><b>Whether AAY/AD-HOC/APL/BPL/Women headed HH/FRA/SECC automatically included</b></td>    
+             
+                    <td align="center"><b>Land Holding in case of Para 5 HHs (in hectare)</b></td>
+                    <td align="center"><b>Bank/PO account linked to the JC</b></td>
+                  <td align="center"><b>Name of the Bank/Post Office </b></td>
+                  <td align="center"><b>Individual Assets constructed, if any</b></td>
+              
+              
+                   </tr>
+    
+          <tr bgcolor="#82b4ff" align="center">
+        
+        <td>1</td>
+        
+        <td>2</td>
+        
+        <td>3</td>
+        
+        <td>4</td>
+        
+        <td>5</td>
+        
+        <td>6</td>
+        
+        <td>7</td>
+        
+        <td>8</td>
+        
+        <td>9</td>
+        
+        <td>10</td>
+        
+        <td>11</td>
+        
+        <td>12</td>
+        
+        </tr>
+    
+    
+    
+                    
+                    
+    
+                    <tr>
+                    <td align="center">1</td>
+                  
+                     <td align="right">WB-01-009-009-003/341</td>
+              <td align="left">23/07/2021</td>
+            <td align="left">SURENDRA ROY<br>(SURENDRA ROY)</td>
+         <td align="right">76<br>(M)</td>
+             <td align="left">Self</td>
+                <td align="left">OTH</td>
+                      <td align="left">N/N/</td>
+                       <td align="left">N/N</td>
+                      <td align="left">XXXXXXXXXXXXXXX</td>
+                    <td align="left">Bank of India</td>
+                        <td align="left"></td>
+                     
+                     
+        
+                       </tr>
+                       
+                    
+                    
+    
+                    <tr>
+                    <td align="center">2</td>
+                  
+                     <td align="right">WB-01-009-009-003/95-A</td>
+              <td align="left">24/07/2021</td>
+            <td align="left">MAMATA MALLICK<br>(MAMATA MALLICK)</td>
+         <td align="right">29<br>(F)</td>
+             <td align="left">Self</td>
+                <td align="left">OTH</td>
+                      <td align="left">N/N/</td>
+                       <td align="left">N/N</td>
+                      <td align="left">XXXXXXXXXXX</td>
+                    <td align="left">State Bank of India</td>
+                        <td align="left"></td>
+                     
+                     
+        
+                       </tr>
+                       
+                    
+                    
+    
+                    <tr>
+                    <td align="center">3</td>
+                  
+                     <td align="right">WB-01-009-009-010/390</td>
+              <td align="left">23/07/2021</td>
+            <td align="left">NILKAMAL ROY<br>(NILKAMAL ROY)</td>
+         <td align="right">44<br>(M)</td>
+             <td align="left">Self</td>
+                <td align="left">OTH</td>
+                      <td align="left">N/N/</td>
+                       <td align="left">N/N</td>
+                      <td align="left">XXXXXXXXXXXXXXX</td>
+                    <td align="left">Bank of India</td>
+                        <td align="left"></td>
+                     
+                     
+        
+                       </tr>
+                       
+                    
+                    
+    
+                    <tr>
+                    <td align="center">4</td>
+                  
+                     <td align="right">WB-01-009-009-011/240</td>
+              <td align="left">23/07/2021</td>
+            <td align="left">GANESH DEBNATH<br>(KAJAL DEBNATH)</td>
+         <td align="right">39<br>(F)</td>
+             <td align="left">Wife</td>
+                <td align="left">OTH</td>
+                      <td align="left">N/N/</td>
+                       <td align="left">N/N</td>
+                      <td align="left">XXXXXXXXXXXXXXX</td>
+                    <td align="left">Bank of India</td>
+                        <td align="left"></td>
+                     
+                     
+        
+                       </tr>
+                       
+                    
+                    
+    
+                    <tr>
+                    <td align="center">5</td>
+                  
+                     <td align="right">WB-01-009-009-011/241</td>
+              <td align="left">12/08/2021</td>
+            <td align="left">KALIPADA SARDAR<br>(KALIPADA SARDAR)</td>
+         <td align="right">48<br>(F)</td>
+             <td align="left">Self</td>
+                <td align="left">ST</td>
+                      <td align="left">N/N/</td>
+                       <td align="left">N/N</td>
+                      <td align="left">XXXXXXXXXXX</td>
+                    <td align="left">State Bank of India</td>
+                        <td align="left"></td>
+                     
+                     
+        
+                       </tr>
+                       
+                    
+                    
+    
+                    <tr>
+                    <td align="center">6</td>
+                  
+                     <td align="right">WB-01-009-009-011/242</td>
+              <td align="left">12/08/2021</td>
+            <td align="left">LAKSHMI SARDAR<br>(LAKSHMI SARDAR)</td>
+         <td align="right">62<br>(F)</td>
+             <td align="left">Self</td>
+                <td align="left">SC</td>
+                      <td align="left">N/N/</td>
+                       <td align="left">N/N</td>
+                      <td align="left">XXXXXXXXXXX</td>
+                    <td align="left">State Bank of India</td>
+                        <td align="left"></td>
+                     
+                     
+        
+                       </tr>
+                       
+                    
+                    
+    
+                    <tr>
+                    <td align="center">7</td>
+                  
+                     <td align="right">WB-01-009-009-011/243</td>
+              <td align="left">12/08/2021</td>
+            <td align="left">MANAMATI DAS<br>(MANAMATI DAS)</td>
+         <td align="right">67<br>(F)</td>
+             <td align="left">Self</td>
+                <td align="left">SC</td>
+                      <td align="left">N/N/</td>
+                       <td align="left">N/N</td>
+                      <td align="left">XXXXXXXXXXXXX</td>
+                    <td align="left">Bangia Gramin Vikash Bank</td>
+                        <td align="left"></td>
+                     
+                     
+        
+                       </tr>
+                       
+                    
+                    
+    
+                    <tr>
+                    <td align="center">8</td>
+                  
+                     <td align="right">WB-01-009-009-012/409</td>
+              <td align="left">23/07/2021</td>
+            <td align="left">PRABIR BISWAS<br>(PRABIR BISWAS)</td>
+         <td align="right">32<br>(M)</td>
+             <td align="left">Self</td>
+                <td align="left">OTH</td>
+                      <td align="left">N/N/</td>
+                       <td align="left">N/N</td>
+                      <td align="left">XXXXXXXXXXXXXXX</td>
+                    <td align="left">Bank of India</td>
+                        <td align="left"></td>
+                     
+                     
+        
+                       </tr>
+                       
+                    
+                    
+    
+                    <tr>
+                    <td align="center">9</td>
+                  
+                     <td align="right">WB-01-009-009-012/410</td>
+              <td align="left">23/07/2021</td>
+            <td align="left">RANI MONDAL<br>(RONI MONDAL)</td>
+         <td align="right">64<br>(F)</td>
+             <td align="left">Self</td>
+                <td align="left">OTH</td>
+                      <td align="left">N/N/</td>
+                       <td align="left">N/N</td>
+                      <td align="left">XXXXXXXXXXXXX</td>
+                    <td align="left">Bangia Gramin Vikash Bank</td>
+                        <td align="left"></td>
+                     
+                     
+        
+                       </tr>
+                       
+                    
+                    
+    
+                    <tr>
+                    <td align="center">10</td>
+                  
+                     <td align="right">WB-01-009-009-012/411</td>
+              <td align="left">23/07/2021</td>
+            <td align="left">NILMADHAB SARKAR<br>(NILMADHAB SARKAR)</td>
+         <td align="right">46<br>(M)</td>
+             <td align="left">Self</td>
+                <td align="left">OTH</td>
+                      <td align="left">N/N/</td>
+                       <td align="left">N/N</td>
+                      <td align="left">XXXXXXXXXXXXXXX</td>
+                    <td align="left">Bank of India</td>
+                        <td align="left"></td>
+                     
+                     
+        
+                       </tr>
+                       
+                    
+                    </tbody></table><p style="PAGE-BREAK-AFTER: always" ;display:none;line-height:1px=""></p><table align="center" width="99%" border="1" bordercolor="#EBEBEB" style="border-collapse:collapse " cellspacing="0">
+         
+                  
+                   <tbody><tr bgcolor="#82b4ff">
+                      
+                     <td align="center"><b>S No.</b></td>
+                  <td align="center"><b>Job Card Numbers issued by GP</b></td>
+                <td align="center"><b>Date on which Job Card issued</b></td>
+                 <td align="center"><b>Head of the HH/Other members</b></td>
+                <td align="center"><b>Age/Sex</b></td>
+                  <td align="center"><b>Relationship with head oh HH</b></td>
+                   <td align="center"><b>SC/ST/Others</b></td>
+                <td align="center"><b>Whether AAY/AD-HOC/APL/BPL/Women headed HH/FRA/SECC automatically included</b></td>    
+             
+                    <td align="center"><b>Land Holding in case of Para 5 HHs (in hectare)</b></td>
+                    <td align="center"><b>Bank/PO account linked to the JC</b></td>
+                  <td align="center"><b>Name of the Bank/Post Office </b></td>
+                  <td align="center"><b>Individual Assets constructed, if any</b></td>
+    
+                   
+    
+                   </tr>
+                        
+    
+                    <tr>
+                    <td align="center">11</td>
+                  
+                     <td align="right">WB-01-009-009-012/412</td>
+              <td align="left">23/07/2021</td>
+            <td align="left">PALTU SAHA<br>(PALTU SAHA)</td>
+         <td align="right">31<br>(M)</td>
+             <td align="left">Self</td>
+                <td align="left">OTH</td>
+                      <td align="left">N/N/</td>
+                       <td align="left">N/N</td>
+                      <td align="left">XXXXXXXXXXXXXXX</td>
+                    <td align="left">Bank of India</td>
+                        <td align="left"></td>
+                     
+                     
+        
+                       </tr>
+                       
+                    
+                    
+    
+                    <tr>
+                    <td align="center">12</td>
+                  
+                     <td align="right">WB-01-009-009-012/413</td>
+              <td align="left">23/07/2021</td>
+            <td align="left">UJJWAL PAHARI<br>(UJWAL PAHARI)</td>
+         <td align="right">28<br>(M)</td>
+             <td align="left">Self</td>
+                <td align="left">OTH</td>
+                      <td align="left">N/N/</td>
+                       <td align="left">N/N</td>
+                      <td align="left">XXXXXXXXXXX</td>
+                    <td align="left">State Bank of India</td>
+                        <td align="left"></td>
+                     
+                     
+        
+                       </tr>
+                       
+                    
+                    
+    
+                    <tr>
+                    <td align="center">13</td>
+                  
+                     <td align="right">WB-01-009-009-013/558</td>
+              <td align="left">23/07/2021</td>
+            <td align="left">SAPTAMI MONDAL<br>(SAPTAMI MONDAL)</td>
+         <td align="right">62<br>(F)</td>
+             <td align="left">Self</td>
+                <td align="left">OTH</td>
+                      <td align="left">N/N/</td>
+                       <td align="left">N/N</td>
+                      <td align="left">XXXXXXXXXXXXX</td>
+                    <td align="left">Bangia Gramin Vikash Bank</td>
+                        <td align="left"></td>
+                     
+                     
+        
+                       </tr>
+                       
+                    
+                    
+    
+                    <tr>
+                    <td align="center">14</td>
+                  
+                     <td align="right">WB-01-009-009-015/553</td>
+              <td align="left">23/07/2021</td>
+            <td align="left">RISIMANI DAS<br>(RISHIMANI DAS)</td>
+         <td align="right">28<br>(M)</td>
+             <td align="left">Self</td>
+                <td align="left">OTH</td>
+                      <td align="left">N/N/</td>
+                       <td align="left">N/N</td>
+                      <td align="left">XXXXXXXXXXX</td>
+                    <td align="left">State Bank of India</td>
+                        <td align="left"></td>
+                     
+                     
+        
+                       </tr>
+                       
+                    
+                </tbody></table>
+                
+                </div>
+                <br>
+                  <a id="ContentPlaceHolder1_LinkButton1" href="javascript:__doPostBack('ctl00$ContentPlaceHolder1$LinkButton1','')">Download In Excel</a>&nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  <a href="javascript:window.print()" id="ContentPlaceHolder1_Print">Print</a>
+    
+                </center>
+    
+        </div>
+        </form>
+    
+    
+    </body></html>

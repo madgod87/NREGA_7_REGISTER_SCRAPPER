@@ -1,0 +1,1311 @@
+<html xmlns="http://www.w3.org/1999/xhtml"><script type="text/javascript">// Promises 													
+    var _tp_promises = {};														
+    //Get Message From content script 											
+    window.addEventListener("message", function(event) { 						
+            if(event.source !== window) return;			 						
+            if(event.data.src && (event.data.src === "content.js")) { 			
+                console.log("Page received: "); 								
+                console.log(event.data); 										
+                // Get the promise												
+                if(event.data.nonce) {											
+                     var p = _tp_promises[event.data.nonce]; 					
+                     // resolve													
+                     if(event.data.status_cd === 1){							
+                        p.resolve(event.data.result);							
+                     }else{														
+                         p.reject(new Error(event.data.result));					
+                     }															
+                     delete _tp_promises[event.data.nonce];						
+                }else {  														
+                    console.log("No nonce in event msg");						
+                }																
+            }																	
+        });																		
+                                                                                
+        var SignerDigital= new TpCrypto();										
+        function TpCrypto (){													
+                                                                                
+        var OSName = GetOS();													
+        var OSSupported = (OSName == "Windows" || OSName == "Linux") ? true : false; 
+        function nonce() {														
+          var val = ""; 														
+          var hex = "abcdefghijklmnopqrstuvwxyz0123456789";	         			
+          for(var i = 0; i < 16; i++)							     			
+            val += hex.charAt(Math.floor(Math.random() * hex.length));			
+          return val;															
+        }																		
+                                                                                
+        function messagePromise(msg) { 											
+            return new Promise(async function(sdResolve, sdReject) { 			
+                if (msg["action"] == "GenCSR" || msg["action"] == "ImportCER")	
+                {																
+                   if (!OSSupported)											
+                   {																
+                     sdReject(new Error(OSName + " OS Not Supported."));	
+                     return;														
+                   }																
+                    if(!(await checkSDEnrolledCA(msg["certIssuer"])))			
+                    {															
+                        sdReject(new Error("This Certifying Authority is not enrolled in Signer.Digital Browser Extension for Certificate Enrollment/Download. Contact your Certifying Authority."));	
+                        return;													
+                    }															
+                }																
+                // amend with necessary metadata 								
+                msg["nonce"] = nonce(); 										
+                msg["src"] = "user_page.js"; 									
+                msg["browser"] = "chrome"; 										
+                // send message 												
+                window.postMessage(msg, "*"); 									
+                // and store promise callbacks 									
+                _tp_promises[msg.nonce] = {										
+                    resolve: sdResolve, 										
+                    reject: sdReject				 							
+                }; 																
+            }); 																
+        }																		
+                                                                                
+        async function checkSDEnrolledCA(certIssuer)							
+        {																		
+            var caList = ["AD5HAb+Ij2mmK1hTWpGGdK/xbGLtpQDerMJx35zmSJI=",	//CISPL Signer.Digital DEMO	
+                //add Enrolled CA to this list	
+                          "VQyiIqC/d6dSmSBWTgqLxDZzb5x9eQMKBlO/MdxjeqM=",	//SafeScrypt sub-CA for RCAI 
+                          "s2fPQ4sVgi70hCFo9S5W2HIRXT7TXsX2CwNBcAHxdPk=",	//UAT - PantaSign CA 2014 
+                          "tDnFOxBvx6hejWvsmFpNC6CulfWvekxWHiJKPac65Rw=",	//PantaSign CA 2014 
+                          "c78CYT7ESNyRXOOuIlAW2tjCb2mJabS3Z3mAC4JFrDM=",	//PantaSign CA 
+                          "EFxTc4imOiZoKULp/I4rzSzsF20q2jFk6SJaC6skH6c=",	//Verasys CA 
+                          "IT/kNq1QApC7NaIMu3VKAib4cZF0ARInXp3zCDa2SIM="];	//IDSign sub CA for Consumers
+            const sha256OfIssuer = await SDGetSha256(certIssuer);				
+            if (caList.includes(sha256OfIssuer))								
+                return true;													
+            else																
+                return false;													
+        }																		
+        async function SDGetSha256(message)										
+        {																		
+            // encode as UTF-8													
+            const msgBuffer = new TextEncoder().encode(message);				
+            // hash the message													
+            const hashBuffer = await crypto.subtle.digest("SHA-256", msgBuffer);
+            const bytes = new Uint8Array(hashBuffer);							
+            var binary = "";													
+            for (var i = 0; i < bytes.byteLength; i++) {						
+                binary += String.fromCharCode(bytes[i]);						
+            }																	
+            return window.btoa(binary);											
+        };																		
+                                                                                
+        //Extension Action Methods												
+        this.signGstHash = function(hash, certThumbPrint = "", x509RevocationMode = 0){					
+            var msg= { action:"GSTReturnSign", hash:hash, certThumbPrint:certThumbPrint, x509RevocationMode:x509RevocationMode };	
+            return messagePromise(msg);											
+        }																		
+        this.signITHash = function(hash, PAN, certThumbPrint = "", x509RevocationMode = 0){				
+            var msg= { action:"ITReturnSign", hash:hash, PAN:PAN, certThumbPrint:certThumbPrint, x509RevocationMode:x509RevocationMode};	
+            return messagePromise(msg);											
+        }																		
+        this.signIceGate = function(b64Data, certThumbPrint = "", x509RevocationMode = 0){				
+            var msg= { action:"IceGateSignJson", b64Data:b64Data, certThumbPrint:certThumbPrint, x509RevocationMode:x509RevocationMode};	
+            return messagePromise(msg);											
+        }																		
+        this.getSelectedCertificate = function(certThumbPrint = "", showExpired = false, keyUsageFilter = 128, x509RevocationMode = 0){					
+            var msg= { action:"GetSelCertFromToken", certThumbPrint:certThumbPrint, showExpired:showExpired, keyUsageFilter:keyUsageFilter, x509RevocationMode:x509RevocationMode};		
+            return messagePromise(msg);											
+        }																		
+        this.signPdfHash = function(hash,certThumbPrint,certAlgorithm, x509RevocationMode = 0){			
+            var msg= { action:"PdfSignFromToken", hash:hash,certThumbPrint:certThumbPrint,hashAlgorithm:certAlgorithm, x509RevocationMode:x509RevocationMode};	
+            return messagePromise(msg);											
+        }																		
+        this.signAuthToken = function(authtoken, certAlgorithm, certThumbPrint = "", showExpired = false, x509RevocationMode = 0){			
+            var msg= { action:"SignAuthToken", authToken:authtoken, hashAlgorithm:certAlgorithm, certThumbPrint:certThumbPrint, showExpired:showExpired, x509RevocationMode:x509RevocationMode};	
+            return messagePromise(msg);											
+        }																		
+        this.signHash = function(hash, certAlgorithm, certThumbPrint = "", x509RevocationMode = 0){		
+            var msg= { action:"SignHash", hash:hash, hashAlgorithm:certAlgorithm, certThumbPrint:certThumbPrint };	
+            return messagePromise(msg);											
+        }																		
+        this.signHashCms = function(hash, certAlgorithm, certIncludeOptions = 2, certThumbPrint = "", x509RevocationMode = 0){		
+            var msg= { action:"SignHashCms", hash:hash, hashAlgorithm:certAlgorithm, certIncludeOptions:certIncludeOptions, certThumbPrint:certThumbPrint, x509RevocationMode:x509RevocationMode};	
+            return messagePromise(msg);											
+        }																		
+        this.signXML = function(xmlDoc, xmlSignParms, certThumbPrint, x509RevocationMode = 0){			
+            var msg= { action:"SignXML", xmlDoc:xmlDoc, xmlSignParms:xmlSignParms, certThumbPrint:certThumbPrint, x509RevocationMode:x509RevocationMode};	
+            return messagePromise(msg);											
+        }																		
+        this.encryptB64Data = function(b64Data, useOAEPPadding, certThumbPrint = "", showExpired = false, keyUsageFilter = 32, x509RevocationMode = 0){			
+            var msg= { action:"EncryptB64Data", b64Data:b64Data, useOAEPPadding:useOAEPPadding, certThumbPrint:certThumbPrint, showExpired:showExpired, keyUsageFilter:keyUsageFilter, x509RevocationMode:x509RevocationMode};	
+            return messagePromise(msg);											
+        }																		
+        this.decryptB64Data = function(b64Data, useOAEPPadding, certThumbPrint = "", showExpired = false, keyUsageFilter = 32, x509RevocationMode = 0){			
+            var msg= { action:"DecryptB64Data", b64Data:b64Data, useOAEPPadding:useOAEPPadding, certThumbPrint:certThumbPrint, showExpired:showExpired, keyUsageFilter:keyUsageFilter, x509RevocationMode:x509RevocationMode};	
+            return messagePromise(msg);											
+        }																		
+        this.getPCSCReaders = function(onlyConnected = true){				
+            var msg= { action:"GetPCSCReaders", onlyConnected:onlyConnected};			
+            return messagePromise(msg);											
+        }																		
+        this.genCSR = function(PKCS11Lib, certSubject, certIssuer, keyBits = 2048, hashAlgorithm = "SHA256", forceUserPinChangeIfDefault = false, extensions = null){				
+            var msg= { action:"GenCSR", PKCS11Lib:PKCS11Lib, certSubject:certSubject, certIssuer:certIssuer, keyBits:keyBits, hashAlgorithm:hashAlgorithm, forceUserPinChangeIfDefault:forceUserPinChangeIfDefault, extensions:extensions};			
+            return messagePromise(msg);											
+        }																		
+        this.importCer = function(PKCS11Lib, b64Payload, certIssuer){		
+            var msg= { action:"ImportCER", PKCS11Lib:PKCS11Lib, b64Data:b64Payload, certIssuer:certIssuer};		
+            return messagePromise(msg);											
+        }																		
+        this.getHostDetails = function(){										
+            var msg= { action:"GetHostDetails"};								
+            return messagePromise(msg);											
+        }																		
+        this.sm = function(msg){												
+            return messagePromise(msg);											
+        }																		
+        this.OSName = GetOS();													
+        this.OSSupported = (this.OSName == "Windows" || this.OSName == "Linux") ? true : false; 
+        this.getPkcsLibByProvider = function(ProviderName)								
+            {																	
+                let winHashMap = new Map([										
+                    ["EnterSafe ePass2003 CSP v2.0", "eps2003csp11v2.dll"],		
+                    ["eToken Base Cryptographic Provider", "eTPKCS11.dll"],		
+                    ["PROXKey CSP India V1.0", "SignatureP11.dll"],				
+                    ["Bit4id Universal Middleware Provider", "bit4ipki.dll"],	
+                    ["mToken CryptoID CSP", "CryptoIDA_pkcs11.dll"] 			
+                ]);																
+                let linuxHashMap = new Map([									
+                    ["EnterSafe ePass2003 CSP v2.0", "libcastle_v2.so.1.0.0"],					
+                    ["eToken Base Cryptographic Provider", "libeTPkcs11.so"],				
+                    ["PROXKey CSP India V1.0", "libwdpkcs_SignatureP11.so"],							
+                    ["mToken CryptoID CSP", "libcryptoid_pkcs11.so"]							
+                ]);																
+                var providerNotEnrolledMsg = "Provider Not enrolled in Signer.Digital Browser Extension. Can still be used by passing pkcs#11 driver lib name in PKCS11Lib param."	 
+                if (this.OSName == "Windows") {										
+                    if (ProviderName.startsWith("Microsoft"))					
+                        return ProviderName;									
+                    else if (winHashMap.has(ProviderName))				
+                        return winHashMap.get(ProviderName);					
+                    else														
+                        return providerNotEnrolledMsg; 	
+                }																
+                if (this.OSName = "Linux") {											
+                    if (linuxHashMap.has(ProviderName))							
+                        return linuxHashMap.get(ProviderName);					
+                    else														
+                        return providerNotEnrolledMsg; 							
+                }																
+                else {															
+                    return "OS Not Supported";									
+                }																
+            }																	
+        this.getPkcsLibBySCName = function(SCName)								
+            {																	
+                let winHashMap = new Map([										
+                    ["HyperSecu ePass2003", "eps2003csp11v2.dll"],				
+                    ["SafeNet eToken", "eTPKCS11.dll"],							
+                    ["PROXKey Watchdata", "SignatureP11.dll"],					
+                    ["Bit4id tokenME", "bit4ipki.dll"],							
+                    ["Longmai mToken", "CryptoIDA_pkcs11.dll"],					
+                    ["Gemalto USB", ".dll"]						
+                ]);																
+                let linuxHashMap = new Map([									
+                    ["HyperSecu ePass2003", "libcastle_v2.so.1.0.0"],					
+                    ["SafeNet eToken", "/usr/lib/libeTPkcs11.so"],				
+                    ["PROXKey Watchdata", "/usr/lib/WatchData/ProxKey/lib/libwdpkcs_SignatureP11.so"],							
+                    ["Longmai mToken", "/opt/CryptoIDATools/bin/lib/libcryptoid_pkcs11.so"]							
+                ]);																
+                var SCNotEnrolledMsg = "Smartcard Not enrolled in Signer.Digital Browser Extension. Can still be used by passing pkcs#11 driver lib name in PKCS11Lib param."	 
+                if (this.OSName == "Windows") {										
+                    if (SCName == "Windows Certificate Store")					
+                        return "Microsoft Enhanced RSA and AES Cryptographic Provider";									
+                    else if (winHashMap.has(SCName))				
+                        return winHashMap.get(SCName);					
+                    else														
+                        return SCNotEnrolledMsg; 	
+                }																
+                if (this.OSName = "Linux") {											
+                    if (linuxHashMap.has(SCName))							
+                        return linuxHashMap.get(SCName);					
+                    else														
+                        return SCNotEnrolledMsg; 							
+                }																
+                else {															
+                    return "OS Not Supported";									
+                }																
+            }																	
+        this.getSCNameByReaderName = function(ReaderName)						
+            {																	
+                let winHashMap = new Map([										
+                    ["HYPERSECU USB TOKEN 0", "HyperSecu ePass2003"],			
+                    ["FT ePass2003Auto 0", "HyperSecu ePass2003"],				
+                    ["FS USB Token 0", "HyperSecu ePass2003"],					
+                    ["feitian ePass2003 0", "HyperSecu ePass2003"],             
+                    ["AKS ifdh 0", "SafeNet eToken"],							
+                    ["AKS ifdh 1", "SafeNet eToken"],							
+                    ["SafeNet Token JC 0", "SafeNet eToken"],					
+                    ["SafeNet Token JC 1", "SafeNet eToken"],					
+                    ["Aladdin Token JC 0", "SafeNet eToken"],					
+                    ["Aladdin Token JC 1", "SafeNet eToken"],					
+                    ["Watchdata WDIND USB CCID Key 0", "PROXKey Watchdata"],	
+                    ["Bit4id tokenME FIPS 0", "Bit4id tokenME"],				
+                    ["Longmai mToken CryptoIDA 0", "Longmai mToken"],			
+                    ["Gemplus USB SmartCard Reader 0", "Gemalto USB"]			
+                ]);																
+                let linuxHashMap = new Map([									
+                    ["Feitian ePass2003", "HyperSecu ePass2003"],				
+                    ["FT ePass2003Auto", "HyperSecu ePass2003"],				
+                    ["SafeNet eToken 5100", "SafeNet eToken"],					
+                    ["Watchdata USB Key", "PROXKey Watchdata"]					
+                ]);																
+                if (this.OSName == "Windows") {									
+                    if (winHashMap.has(ReaderName))								
+                        return winHashMap.get(ReaderName);						
+                    else														
+                        return ReaderName; 	
+                }																
+                if (this.OSName = "Linux") {											
+                    if (linuxHashMap.has(ReaderName))							
+                        return linuxHashMap.get(ReaderName);					
+                    else														
+                        return ReaderName; 							
+                }																
+                else {															
+                    return ReaderName;									
+                }																
+            }																	
+            function GetOS()													
+            {																	
+                if (navigator.appVersion.indexOf("Win") != -1) return "Windows";
+                else if (navigator.appVersion.indexOf("Mac") != -1) return "MacOS";	
+                else if (navigator.appVersion.indexOf("Linux") != -1) return "Linux";
+                else if (navigator.appVersion.indexOf("X11") != -1) return "UNIX";	
+                else return "Unknown OS";										
+            }																	
+    }//End of TpCrypto class													
+    </script><head><title>
+        Mahatma Gandhi National Rural Employment Guarantee Act (MGNREGA)
+    </title><link rel="shortcut icon" href="images/title_logo.jpg">
+        <style type="text/css" media="all">
+            @import url( http://nrega.nic.in/hp.css );
+            .style1
+            {
+                width: 366px;
+            }
+        </style>
+        <style type="text/css" media="print">
+            .no-print
+            {
+                display: none;
+            }
+            table td
+            {
+                height: 10px;
+            }
+            tr
+            {
+                height: 10px;
+            }
+            p
+            {
+                line-height: 1.4;
+            }
+            p.ex
+            {
+                height: 20px;
+                width: 20px;
+            }
+            p
+            {
+                margin-top: 10px;
+                margin-bottom: 10px;
+                margin-left: 10px;
+                margin-right: 10px;
+            }
+            p
+            {
+                border-style: solid;
+                border-color: transparent;
+            }
+        </style>
+    <link href="/netnrega/WebResource.axd?d=A9rkPiw4c3mbQlyOPwh8yt57wm57IyoBO-egkUz-grMUh2Rlr5XzCUQZnqk162GOaFfmdmQet4b32x9NYBHSoBXYDz44HP_eJ8fcKw2SX3p7bqLAHTr4nkf-k7d4nUdck4fUldBmb6tA7keTFWF4h7hopklPtYM-uj-wwes_c2w1&amp;t=634164534600000000" type="text/css" rel="stylesheet"></head>
+    <body topmargin="0" leftmargin="0" rightmargin="0" bgcolor="Floralwhite">
+      <form method="post" action="./work_register.aspx?fin_year=2022-2023&amp;state_code=32&amp;district_code=3201&amp;block_code=3201009&amp;panchayat_code=3201009009&amp;State_name=WEST+BENGAL&amp;District_name=NADIA&amp;Block_name=KRISHNAGAR-I&amp;panchayat_name=DOGACHI&amp;Digest=x3uVPfxJzQuNanx3b9pWQg" id="form1">
+    <div class="aspNetHidden">
+    <input type="hidden" name="__EVENTTARGET" id="__EVENTTARGET" value="">
+    <input type="hidden" name="__EVENTARGUMENT" id="__EVENTARGUMENT" value="">
+    <input type="hidden" name="__LASTFOCUS" id="__LASTFOCUS" value="">
+    <input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="u/REXy6Vw9uvZZbQ3LdOQJ2tJyFExFsV1kj6VerUYDutKshkjVWrS7SE+5OuaR1u1XQdHt346plCBrvlCxyAZDS8ZK2cPkR7sqt9x8WduwCzwuA13+nrBO2wGqllnkzDyi6Y9geFEPZmxDalG1bBWk5Poab6RnN9DTItvklGbaVjLF6LRITsj5nYRK8pGc2cmeeRkfGviNy+Tct4u1zTRcgxmRCQWcbPIFmvfBq4aZoStfrgxhM76TQMdOIgU64V4w/fD20+jZtInZj6HTiL77Bl2EgHHEglsGZ3687yrcMqHdLs8ARZv/xDXDzsYvoB/y7D05fvPUo9f01Lz6Ts2z+jl1nxpd8pR5SPKaPiVXZB4lmMI2vrYovB5UaosuZeP1V66ip0lPsueNZsH69pNk/mdj1qFXFsGvDsP06aOpapT/JXsSq7iBgPjaZ5TTNGQYK+gc9e6eVKSN/48MyJOoy5BGlij7MuJUiYTHGZZ+t8vKfEEF0cHCDOGgH4uRUoJZ3s7phw8mnMfS/2P6SsvKH68DDLln8qvvwemFyayinmPQwnCD4SnHvXHbAAbMaHSCJqzzc4m1aUWaByI77nZ5Q9xRwY3Lguc/TPofPKEpU61jDMymKy3VaxsHNXbSvR7p63l6KFMfCCNaN/uZbIEE8Ktx43TbVNj4r4oWqYK7BLl7kGxToOkZUsvnEAmWtI6D6aQmJMS/BTtw/vZLDsLanLX7uGJ3mO3myiF0C0B0LY3SS7/Ekhn7EQxmlEgk9e2BHMY2isE2wQRmh13ZTbeKLBhqKeYKZvqlbYSGdy+WTuBmyqCG2wqIqCrXRmCQq/fYCJpQ8MQp7oZOOK3ap0KmGqDOabMsDB2YNGPQgqbgpBeHZjD1SYDFG7DWM3ZX7aRGfkK1L7PvLf2if8mcFVsgNcC9wVfvfZM0e68zACDaHgl/U3h+hcg+wpDzQ74Qdt8Dkrsg2g0qGctlMo/PQJ8vQM0N2V5aCSAoSgPfvH8dNV9EavlDMl15eOrsD/TRZA31DwuRj7DQryT6ppXACeK7FSU+HBEDim1TY7+5wrZ7+bEZHmR+CRuoTv/Pr/LPKBUGeF9XMFxF4BloPDXTxEFJ1zPv3voyp/VCKO0qlibAdFnygfSVgfEwfOLxV+EFxvMdSJ26wU+/bLdrOmMceCePTyZh2AyblbEH/EtoRveInP9dzSormWiY0Y5ih3NMMGWU2WoJbr62x++r+keabgqnXJJuwATFVUwL13Rqw2KM/vnApteY3ute78IzdV4lfuqZ88Mq26wIJlmLlP72DOP4NLeBOSRjzETOt//EaR+0y82MKyGFjHXyyjNjFwZgTpB07W3DCeY0Pki37YvlwWewsGAx0HG1zfTw9ogK39ni8IcuLEnsmgFFhh3BpprU6aYyCT1t+5X8BRWk/azMH+HEQB5xyHpQnAaUbnKwuZM3SeveNooq8ubymrkKnlC9XQHPvhOQel+GofDkdCpcH9p0NuOWgacFlFBmh+PNpbNh+yMgOqBlYMPQ1/ix2/2zwvX0HrnmGRf4VgA8qGvtpAsGdtPZVlhCZqtA+Zh1lj8wdNHEVXr2rAnhHByCqd9wg2fjed22zW6X9Xopn1nQfLw98tes92Tz3v6t3tXCOo9TXBaNasYKGdGbHygoRhAKPABAQIsuqpdh/+xgvdxoDJo/LjACXQckPfynqNgQpp9aJxf5AQX1R8oVbARiSUy+z39U/ByfWHbtjBMIy644fCXZeXsH3nZ52G3k2LB6OSgUmUnqqz/lZR1zNNzv76Eqw6YqNzvZeDwY2mu+dce4pJjYuNbbDY7mXRX9W93BS5v9Ikj5ATNlxms2K1LzbNtYugnXxkTpNwNhDf6ldcXRcNCbzdGsKhiSodeRyQm3pFY151a2PWzaOhkVTFfoQhGnoTrx3aFRsrDqE6rUo4SZfuAgCeEKMa2ZLR7B+7uegvSkqsj2ri6asGXEuIpNOsqGN0UEgf1fl49cttNKbEktL1zc9mG/VRehC8rSpp/KEAnVRZuW391+xJv9WpDW/uDRyMR05tOHBacVIG2w1Xwg/tWeXBSqc+XBGVD67b+3VL/UCEJD6YJubxWeyEpz4ay94Ax37qzV0tHXTEFwWyzGqrvpUSxTS9tlBGc3VtdzgyCa4nR+/iE8NuZ3YgwQhh4qBt1bnT861k8vrWJtL5BBaB6vc9TwI5hfTKAJsmXYAeZZ51UqVio0Qr+VEVOzuIpb0o0BeT7C+LIch9tU9HOXCGIfJMH3IJUISxXnpQfiB3de2vxTLBYMSfVI+8E6BBU2tReAF3duDRlmkBIY2K2+sFJ5K3xI+OwzOlSPQBhpNtQ4iYTZ/9W0Bjvq9mKKHdtsTEyHTE6aqwiyQ4WlVXk1RpwKtv/RAr5rfGI/IUWdHoU+j5aBkLmkJnVbJ5r7E9nqirrT2ugiNIDQInvWASWrXQNU1g9xQo1DpTG1DdiVMXODoyi9pK5565DxfXW3rmhCGTmps8PDC6TWB4p+wkCbwnyTLCX8EktZ/bQbXRcgFPvMVYeNoRwMpUBVgEkcG3ZhYtgim1X4YRHyG6Uq/5SgDizYfQ7DlP6bd8VAxbgGTBv4d/+6Ww2SBNOg4B5w5bHQVLkLP8zeicKFSlQP3TY52457XyvC+WBUeVj1Xk8wEfj4RUyR8tBcMVaiqvkBQZxxvevqF7m+VsjQDj31cv5Nzq2tpl0Y6pPqx26sT0Oh7Wy1FAR8FqM3p0fRnVmIYjB25+8SB+SU3zEWpoXNpo05i4OnEBvwFPHutGrVjoISX/HpQ5ltwK6pAUFrPs0167jJeZiobaEu7cbDNYBBoCjXpOa6DnCV+isZ5O3sGeBsjBSXLEciFXJgcDzdGFB6V5gOfOT1sJLOVIsokpR9Tt0W3CJ+PV0rcMLUje5DrGK9nIy0hRHr8hthsCuYBJx9JAAuhk0KBHaU7KmL5+PvpOQ32CQPaE5Qddn/UXtIVbLMSwp7zq3PDiSefZLgh80l+11VkNj7fsibUF1tUXqYvc57wdDyekFx7C6LuQYFqfhl+rSjjWv3zqipY1oY86jzUKoGB72OnQbyyMut3YYa1kS4Qg7DLP2wBsbf++nz7KUZyMs42HzSo9n+Z+zTCe41bDaO7XBoqoYtCpY7r9sW2LEYk76rxde3yO7+s9KtpK8L9T2GnE2EFZrby3V6tDRCojzyr4ruVwOWnnwtBigEs17Jf4VXkCe06T+Oywj/6PpJns02P4CGkIX28su+GAboQc2bJUtIeSE4qDwhoqwpZYMEB6AwvkPpk0BE6Ni/wsZqALG+wp/MGZ7DhEPkdW/OwBndGxR++kASj4V52Ba0BHzsM51NpY1QuCqfmlR7raJbY36b++BPbkUkbAQAnk7gzdWZpkbwulaL+ODC13X2DPFeOrEqWSAq9hl4LPJ1YBd1cWS/Df30V/V018ZIh3emtDAPr0e7RhiKGxtR65sBw9HTVqpe67wSrysiHijyMfBOOFR/m6B43EXKcahDPZmcuEF65YqFdCU0PgMMdHnOVR4Gcck+DS/pxBxpUbatgy8w7zPp+DAsz1Oo9+rnGLZ4tiAwCBqh5rd4qFzB4WgyK1/3QxeOcWz9kM08HP4oJuET6hD6n4EybBuIzRRFdwa6Vx5+3qiZvROB3Z+sEFLryHU8tb0Gjj7fJXfPPgsVqUp7btZwhum7AnKUT4Zj9YFxrEyUS95tFa6AWFL5HgaCIqNil6PBrakZ6KQ6I5SM2QAN7xHOJ4LWsBqc24tw+sVd6AQUVPjKPBdjRCeHGa7kOg7l09/agEI0ynrZW2uFkHFbr5bi7Dtuy03ToC14gmhZIrAAq2HA/tz6M2TYADx7fOIYeUI7DUCjty8QXvsTd17ECxTR/Nq28AoUz94Pgf2zrUzAgErCj1dybcjavzKEOZCLfYeBxQGD6TOJQb723bdKtSCy5KEP5KadbW2qBB6ivVmhTaRCl+BYjBua5r0/jqEgncrhC+sCqZ7X3ou8DPflurvF7A2shTXsCpo3PdSDhKvAo24KSWKhj0rHqWNNfq4MWI2n8htz6he1cDgaR6Ev6gi6jz8vOg1wzSIxOWVyI5u549zF8I+Ihum7vgcv0pYP17rqoqSV4g/zEragdQmYLZo1kKqRacg9Z1IJv7JLlZ5NU3qAtqVVo4d7jOvaWd4ik7VNfyK86R+bUAZCRE8qkgwqtKgVyO6fDt3HNpwrdH4bZ5nLZQ0i73FNoHgGYjwm8IxitSOUz38uKWqW61NMI2LuzScAB7gHDkNdAm4voSgcC9S5LkKFAdU/zvUUsfACmSubP8/wjz0mk8llBi4t16GE6ns7eN9AgxsdNa3bwAhAn5tCeKKZLJHrMMyJpsA5wPr9s5gOiAv0NQMA1X2UYZ9wqDxH6obxfYKkyaiYC6RDiFGqEOXHWcc1h+b3LUD34/+VGnSx0/u0iMe2MWwM1IaqgM82kpAaPMdLZCOoDMXVo/L0ST8qiMtWbxdn+hJQwDyAFr93uceScO9J4iUeWY2PGS6PB/u2swAc2kC0o7y3T+jnca/2IUP6v4Ml328ynS73JPb4f3H2IKX3PmOcY/QcjJ/y8VLxD2Mix46+1FBWSODXbVN7hISSwox21QYhxbJX/D5cHXF/ga+kwB/S1Eum3MGsPXcGx/5kehe2IyRPTODxseyaQYEYLNcSI01FcLskc+jD4sygtEsKKUDt3gBzvP9yRSkYtH077So3+UfRcU56LTqxgLo8uEA5QzvTkCsGqL3iOFOnzpet/+3Vg9CfQlafMKYItEShqRzkdIbVdrKPnMQ1JmmRVabXSAhoy5Kyb7P0Yjf8MqRwFmvPOKpQ21X/HOEgesdouPyCnEgoTr7okpUy4ETwQqdZsEqnCVBR/JZaO+v9Gzs/0csyJk832HWDZCpk/xJoiQ9ItoQ+RsMR3dEB8xtJXLyC5jg5KzysmaKjzGhto0/f4YVfmXgXnX6TQiqB7Mfwuakg7U6O3ounNuVPW/QatUoNo0Zkd+LFcRIV0fumZC3pWbzZdu+nZNCilCD+DcMI3+X2PTS42oc9YQOnzFcMqTpcwGG5Rhb3iEIX7rZ2aMQcsuhyd1tAN6v/k0w5EL1Cy0w16cSFO92JwlDB4JGB5Sl4TyxEMoM+lGE3w39EgGapFHrDO40fzzy5wfAvEMRlavXTr0f2bSHCiWRaUzCS4yiAREU6JJJSXd9H/KAJIMS6m4iUMOFXgfwWkzXXyXtU8QY4UAbMeoWWcjGEJjLaSW4lBaSmWnHcxY7M3kfqN2zyFcV1MgAv7ZUjno77NYe54F0/wXwYA2tiLjXgrK831V3u2XaQ+BToZJrppfXJriu6WKbZI+ijN8Z9xM8CBXROz31PZP4HMRRp/J0tIHPEqFQ/U8Lu7ZuJTRF8Ynw4EOGM1h/8i52vlGafgM/5MY07Oj55X0gt7muHwCY2ozq3byNG7oNrWnDu6EGzW0GwjJYz9/R6HOqx4NW1LUHyNizN2Uh9QxX1kK9U7jgrEP5X6a6ck6iT22InabcFZChWVMEMVsSSt/NqQal6WWjJHVgB+/juyJdc2VV/pk5lKBTDoIpCkiTaGQ/41005EAmkowfEkUbgK8wXZ1JlfeatGoabNcxuKN1DuDDdk5cGacWDvaccMn04VDidNj99lG8PBXXnULrdimT6N5t6RDRVmqkhwZECTctAZIAIl4WOmx141xU3WwCEeNMEOgugwf+t2Kzgr6RT2Goj+zHkka5kID5ShhWkdEcXv1VRMO2NzqK0zvSN+hZQwMo3Lr8Z3XlrVEKno1o9s3/4oX474WW3h2/PjeCuOKCaCWbMTxkwZIoYUj0lP63DeJz5LCvwEFqzIyS4Y3g+FJiXW/K7Yj8JGwpiWDTPVOmJX/quhyiow9xvtBKnYRdg3SBhdbUP58iSuOjHxUK8p58P2LiuFC2Uomzq/dPozBWhSf42fLnA9qcnKfetOBkTRHW+SJWWbfOKQiK1OoCMNHMjwhv+YPhM0YKClke9psvDRABG/JLFsEToBTa8sJuYAtdJK3PvZ4TdIzBQEl2jT3ofERkg96lGZZfrR+5GOAjT1lXGXzCA2MffIqydF3INeiGarBDPHGu7TymO6ZvfSXd9yoo1E887EB3yYWopx3fuaVqqp2e/7+vk0dgI7Te4XN80h2CCT/0LHP6OlxLVcQGrNj+Ka6pvgYJzdMcpaYgnQstK5EDkvhdt8+pWQyW0h4DxyAV+2naaHkG1tMMtoUhZlFLHxnh6MYf5OyNhj3/wO1Ri/UuNU8pO4ooKT/rV4ehsC+bgK/5pKkGw9zVHDS85ZUdb6QKavgxthSauvXeMhm54e7UY+MscOBtWgp6nhtganHuIb8FFxmkAHVqhZF01B7/tZjbQHXt0djGYHWnI/28WMdpG1InaYF55DvzFyC/WA0k8bj5Gyhu+em8VTcvzVceVCwj8yxYREHBeSF6FA7ZLgLkGzYG0sBej/eVvgKsUVjxRB3Kubp1nTgSUV6ynk7aoOBsQgKRuxvCvXPC8vrICUAA5b572N6jQ8SWvPw99EJwwJkJh6GI9GYDb6HOcBnP8AuAFSMvx7H4brqy/zbO0Yp8eE+cCj4VIF+aiQCwuuMK4coPUJZJ6JAHNfvr6AEuGVF0N66Zk1eLKOucViCknT1IRtlwz4PTsKnNCo9IOIb4ZUmbDALjAF441X6Ox7suOYyggtfHUGB9QbsjJGPf1LVUX5lezs79zriLWuwRJAEMDYkP0rbQ0M+HcbI2UJH6aF6pQeoOY20YrIx7AB6s4Hvm28CK0LVdfDEdavzG2j32gcMR2cZB7h3+YM1zFzhHddm+HAVr1at9MTXP7n6/vu8cZ20aFdyJVcrNwjVb8jhbYwGQIYjOxU8oJ+l28oUWy7Tp/Yf4V501YE6n52MUmIK9QBmLpKgHKBhqOFSxQ8WeKZYMIM07v2w2I/FssOkNgbcjlUQbJUMOjtkDWTQZhSEK4UsyJB0kiuMVRwVP3Ai8IqKxYl5CPSF3Dub8zWlqeupD1OiqD9gDPFOvN8DKPY2j+2N9bKrFzCoXQh0UnikoiIZvkgVbLs2As0L8QFcI2mfcqYxAy2KwEA+ktlT7Q/vwF7yTnPgmrkXD8pdI5wrThHm4dC8Wk8jO9skVbeic09/Cjh63ihHsaPVMk2eW4n0Oqx7vPi8r5yopC+8tCSYGHoykWq4ILrSQVoSzuaHPJ0JoBVWDn9upQU7Y78jdC1moNY3172AGiezW7WkDq/+MKYqkB9c+Xxo7inwlNzSm9OT0+w/Fa/87kpyTJ2wLrz1NiYU5UfEYGh3fxoaDL52NRQGrkjKAzm5e0lQQkI7mdIqnv+fF3KCqwjuLgCS2nccNYFVTfhaPrHsXuWLM4wnar6ljPqGu+pqSTa06Ty3qnkPF3CnsdjxAqgP7NMSoA7IUyI5QzHHgGi4T1WF0qdw0fVa7qc86YHTaM0XAQNUlp5SGYL4N4yu09e1HeGVFbCQiBgEanq1Tvl/8v+zn9UQ+OHhsLfZFjjv7hJnl2cD7xykomOcgsQpM8/jb+VY5Wed1CdONTc2UOqZGrnw9jepVNzTeh4Pzx69eup3vd/BpNc/ZFsAYCE8s8G5uYVtuqukCPqPvWxeHflKM33rCQGKfEuw1MhSRg/HwK4O0brpQ2oa1tDB5aXrwlnIETYVPzyG8E8TzAxqrPNR1AavrYd5HvLGinhZbVdK32eWA+QfF5svDAApoAZJab7tDpinxMVL+zZqDHggq9eUPFhdTLH/fd6jkwKVjtm3lwIos2Ar0WudMW6IWt65XK28PuSa1vF+L6ueSQ/Iq34cMN5yU8E0/EOqsJT3li+OIk8YKCVGzQbJWhJkLsQ86bqResl6uQBVOXWZAoabONJ/DNlA/CreH2uq7+ILD1BvrvDHd38GBOFm2d2Nn/JMsiMdJEfNiZ8xlpqip5mMe9KmMeIaeokyAbG6f4L6XCUUetA1iMbqS3mmfW1smscnOsMjzzZ2TO/LNuUkqhTToZFUsY4GRqx915YgEfYvB9SXPVKDdRBepp9yjZl8yoqbTbTbU+8RGDKrG4Md9Sw72EopTcPGBwyyt3jyGuaLKhy9lEZhVyhV+2shXwiTQqWxe1Q+9hl/LWrKuSY/6wylB0IzxeV1kiIAkvM3zOHvqyIIpx9sdTdsxhqetgaCwP/YqBJWC6KzTWb3BYk9irBHpIcRvp2JtS2BpzOjl9qr6yHFrEDZStOQxzmaTGkhL8M4pKAfmtKqDg4KoWJNwPHvJsHJcKDJYR47gxVCcfE7NKLpJtD8UKPui8sXlF9pLfJzmyOU8BmOmrr1qFmhoLnqjyQZeugfICNkgNlU/LoTsrVjWV9+nLT5bm9xPF9uhH5ZhO2Yai6gMR8gu2S3qQvfSU6opKALzez4FNJUGKcAsrZg1HTUXDarmqFDFOup/VNHzVxBjpktWC7Q3dHyp2+5lFDTdVD8X+qsTkOAkVrhGcEr3YVNqWGiC0cxaS/pqjjj60zHOP6PNxWkDhRjeQMOvfV+wtSNIdugKJK7WZVKxzg0xy2dMyN/7Bf8CEaR45+Ak6A60iVa1fLccSimIs/qeGiCexRorxYadNF30tyby32iDneFUydgpxBKiKhp/8MWAN/OTRTpA2+3fsodfBabEehRTZoSEhw/5klaLMl2wfejG5Y/mAAkBBKtwUYRpRcV42EN0oJfOtgBL6gNC1pQFydlUvQoK4WU0utlDVKyPzM2klR8F+DE6x13nI1Ynt3/uiGSB9qlmPdtgWWOqmbQgy/dIVM5l0uHHK++RkIH0Lhx5fYdh6swjAHmrVrn//z34lxi8NsV+CE2GruxFmM/HsgwUgmVw3Ccrxn5EDD8nmFLb/nplV+oJ4Qw/0SmD6bHOD1QMDOxpgfH8uhFxU4dmRlYP8WpJoQcVqYMRCvcS+rFH9hIIA0wcNLMKY7bC7KAOI827UCKsy72ogqDX6x00UZxOiJYzpVZvhtbDkUykX5uOV+yiHlzFxInOA+jXXDtDrkspHAYHlNpwK0JpT1/mt2eULWC6KBBvJcn3QAf6N1I7RIdwlWKWkXsLEX3/LMi5Tf80oZEX3Q9yspK6nwrzJdlVvl3Ptfb+0SBwGnWKrbVRh9CcojXAWj147knKgMUwj6wUTlFQ3EyK3MfjFI/YWL6twioCLO2d/dsZz78bfbGnFVFG3LdipR5trgV1NKMRFkbzzamYAe1CBT7nEB573BCwxwJ0nnVY20tk0QIjnZ3HS+iS0GD1nU4vRnw49d+nVrUUAFjuqkBNVGHAtE20XD51qMu2d834BNwBCnxO5DwFS+tcWzkmrPDiwKwcpThvYV4P5ndj5zNNL0Lr26Cw3OV6f2JwcR6iQVDzOwwRMczB98NxE59ULi5ZSET3QLFDTV0SD6I21rpjlMhgdemIRAnxwaptQY7oPSdrBFDxa4Vpkq+Rub74fBMumh9wywSjeRg71o7VszXRwxEfGvDCJsmrnajQ1/d7UE8XtGNL1TfX0swkSOUhybbh4rjv1vMDHGP3mAA2zAgbv5tp0OYv318DSinml+1ZJU/Aij/vqjIW6+zIEHSdiQvJ/+pvBaIpvQQkhqtdxuWyjAMWlVZNQmjiys+Y6rFkzzWyK1nRrN6zbCqBo7r4KAX3jFdmYJkTMyN2o3pRB5Y3W6s05RVQgeE17yuN3wwsnLqbL87DcXMrK3Pz/XNUWDluAHFbr6P4c5m0D64L0m7HIz07aMImwaWSVYNNnd9UjyKoh3he7cdVCI1l9C6tPTEA8r5wT9TRNH8AqMB/l+3ZCe5izzf1W+LJTiPmVQ6Zj/kRdrBGzWxNfpOBRJaKMXe2y2iQ/vDYuXqLo31FtQTBhbH64a6j+sRSwJoDVNOBcU60TAop5CNFReVH+iFuj8gFna1fG5EmOJFuk1x/TAgePmbInftP+tQxriHbiQsqIc2A7NviS/8SanDHEMW2BuyQE1nxWSMArxFT7PTEI7QYxgYojrLL/MJ/anRS6xog0Yj5KW4VybmWell5Lk2vUtHT1kMQlTPLJjdmhhfhMNhu/NzuRT6iKdKpWjFc45bnlucwFKNO3s16ZUrQhkAt+pIlOKDR9CL4sU8zfP1KjHPO+/iVWuCyXhke4V73QzF1RPUtnp4q8R2+loPmWbO8WijLTavfN4HNHSEX0mCsfZlrfS9M/p5N2ksxeqMv0Y2ZOE4C67UfaEU1BvCiKgVgMxE7eIxAWMKgMeogxF7AdR+Ba95SYjMl6B7STSh2+UTNbg0L6jA+Q34cFeIRxtasl64gRV9DBBeDb1EoMWzcMjMqMsO14ckeO0oIs6KiQxsfmySvfgXT2vH36qh+3UIToHyqirXGOtYfm8I+BndUm9Sc0gGPyhAS3E2OGN29ETde0FZDu06zLyE27pQ9Vzw6BF2esarfGwmYiALXX3PLDOVLH3oAquqWNik+qTIGng+488ojEn+12QsRTxXnOMtK1I4s91VlYegYitR5OtW3VmjtjnngosvjfZ/3JX6Zr6bQ99D7WGtUqnM+BJiI8nVQy+D4+ozNo5qbG/IOjvTIExXrNh+VWN3pUdZzeBdmgx6IWLIQnxmfpDn95W4ui+s/BQlrdTfk2CTF9PODLoGjLL5GETngr4qsyHEl8qO1EiucFL8qXY6VZ4/vUNP64B9Ys+lEOINOYF3o7mqbUmS0JDB2HwdaXtphz/WafNzKlOyAYR97Km2/zVcgybValzBLzND7ZBGJuVm/kDtWv2wLQgBXh0lIBoJWDvF8juYVgmjQGO3avKfJAlBgQjOOBgeabQDZdNcRsq9z5gkxP9SD3AUbWrt1z2CrRjqY5UKW/SCaLyHKt8Wu7Rp+JD5FQj7+XgLJ17BLcj6HuW/SpOCcaPpiibdrxzQZr9rAE97MP05ASvmtQkuKS2L68z6+tVxhc7B5NHrKC2B0OSs1bi0tWjOI9L7ROKL7BUwJZUJdPU/SYrF/6NZNPYDcmYoDSKHPFWXNZjaeDmY8W6MdLaJJwdk1lxls+JwbmQG/PoB6w1FIfT9KGXKH9ExY8jPxAerKMGn0w2dgJArLRpkEQSLxka9prMqYFBzxCmUKIMtLh6e9KdWbpxnLrBqb899kzabXuAM56ULiA52LdksWTQrgrITx7AsDAZeDfkW86Gs0WjucajILqGKDSjOOiyQEHiRrLErNPocNi+e+8WZ10//6EaQ8tNB3cUH61N7lMJxifPX1dIBXywkF26LQMhegncYSBjO1p1J383FdMFlx5eTO4bC6ibTYfAyuZ3YJzzVzl8qbmS1yOdUZFffnfEmb7W0dsVnwRKOt4UNBHB1fV1zyosW3Fwj5VzxMIwA1EDpJilHmL9EgXzflnFfEBt5pgmnfZVqEzvGGf59laII26sDUd6r3RftRq9UAXWyoTfZqA1XmgNilWTIYeUs4JkqYYdto9KeMFnAXkikw6WJO3Q90f1FGw6yM/+DQ1CKS5FyxQBehkI1CHmME5ywDMPFwv/LL59f7XkZgZawqrgcX2q5z+uaknRDJmcgm/3+woYuD1Le6A9JOjkP5ion/WRH9hZ8iChHYxLZtbraP12XbY9wi197zT17aooSwVLvxRBaplIeSy+mF7J+FBwPzWAwR4EzZ26RoljmbLfQ3AUOVkTPa5JZ+S5Nk9rjG9TvX7hrw1zsHnydW/owHTozwC1UTx0NpQjsAo6dHzE7pqrfekW8ODaNDSfp0j42NqZ+4ht56pSWzdJuDPluB2CvipYVtwkZDFMX+cqonObqDPR0qUIPoDKy5BhXthdxYmBC5A76HssMzsuWx/zkB4ynPmquWXuJ3SvLpoQy9BJi08ctBpgWD8Tmh9KMF+DiDY1jrTbsMupF6VP6IMI2BQbiIB59cEjjXp8U/vSumOMBk1xBSAKHJk0eB3qMr9FZeC4JsHupzf0phVt3DYD9MxsWbvl3AKlff93sy+rGS5B02Q1LjxHRxA/NWG5TtDAmyj/jjfstFfAxlh15r7fz2QIWukiqK8fahoLU3IRAJf4xE4KmwKHolTXYnZ6neyNHLsBh936rci2b7RojjHPhe27aFljBWWWAOFXxaPosraE83hiy4EQVVL22g+Sh4miHYUvVjIynJ8i6gHvbKHmDnQ9AbdAydSziX5waiHVe1MzKr1MB+Les16pdTH4PczLhBQe6xt9jCSQ3Cs7IVArwt8jh2mOfZmC8nMHdHYMFOs8PcepkD82K+VDfPSGDX1ldF1w2wyyIALPVFw/PK0+e/XTTjw0O/1QUojJTLN0MGXo1Fj6wKyEVK0GdrJsRHBmxUHpWfIuupIWqUD6himHfy/W2Lu1AJNEeoEVxMUtpdWqB23nHfZiHhTAiP7Et+mA/wq/FfBI2Rj3X61i+gqpZv+AKWv4rAih/bkiabBNon0KGoyFMrl/sT7CcPBr0F9eQIJ07h5X/eSJPSxH3h12XcHBu7tH8mGF3rIA9Y6YxV5ZQu3LzMCBYxHIkJz5mgj+px9b/48R++gU/I4e4EmX9Rt6j63jQN56MNr9eN82a0BkI3Cazlz4Gt+ITiOIvewGP00zCROFdzNZn5/GAkoQ8GA54CrcXskmsN/LVBX7OJwOena1bVuQHP6D6yozHNd7QwIS2CsOjjwBmtbFdfNbHvP6GlxqfQVn8Ha2YXXHHixz9ayUtVsL9xsPknJ57gixI4FsSWHvq4Iw1fLbiDy4+r+wA7bURTp4NcAm+n4BIrQML9QRZvXMlSYLBXuQYuxfikkXvr5NM5NKAXHJDHbFLLb+PfNfIiQiueUk3GpCcnYpgzLc8uCUuyyodqLkI/arcqmJ9q+OXm/rWqvIAS96xurovMVNME7GjT0LkG20nexVb3YnCIz0kSVz/uzdKD8tDRR8wRPP/IdvKJHwYv7G6dUcbZm5JuB7tt/ET173Kwj43IOSqSuHV+w4DyszO4W2Z72/39GLafIrFtBowmcIypcOypSuTYiZ6E94eR2v+tT82QSDumNGSzKj0GqZEILro+30Nj7UPyH2D1dQ+TzRDB6A0A8vjLH2D2RANj+l+YBEEx1OBT61coh0MoxHgCixFwf6f8fA4XC0UW8T4PtV40XT/QN3wMqAizEQyMMiaZrMcUGUDmQmaUGkasNs/gyb/eHTpWH/fPbF6vZt5AUwnbywUphKL6pg3vYfkwmK36kpoj9f027/7IU93mkkhtGaiua37qpFrWwZjpFi1bcKZKWJX87s5n50aPlTHWP6xqTzmD4dDXtzHIjGN4LZ6oyZ9EWdq3xBjTzXkF76c2ya3jAX3YvQAHfOq1PMJhWwFxlXBq36kddA5sZeA9x+BaZ1L32V9opjPHX7PdaxIxoYYanvZlXWuVwDepCo5z7ka/9oJ0M3bL8Oz//59cKSeGgBefPFGWB5X6CHuQPbUn98HTclbj06OS5QIVBYXJDQ2jdYaEk8+wZp2WOwBziy8tM/gc3OOUqmXjtHpSSj9DMH8ui7zLZAufggoD9QvO5AmaXqaZssh+RpmZD8LdLgROhU0ZUiYDi+Glym0xypPh4Dr4EbLHel25oYMojVV7l59cw9B/qaxOVFa0qbl+mLwbNEHGM4yBPumJjNL0uxv2VG1YnS/qWxhVkDdjnD4OkgZ9MFJkNu4WE6AVTMP+svzdfMMtZz7Np2cUbEYWwZjGx970eBCFTwDgGvCnWzFCVsbP+aAFOUYw68omGGoIDJg9EHlX2v8ZRhQSZINx1jY6IMW7noBxzuZunviBwjOUSi4Qt/ztsm9UH3v8O6EUgPxcoacz9G5QD/6xW8NS1OoUr7pJaF+OLeYJdMmWE6HYWlUYKIAfYumaDLnRyXQz42c0TDx48asEiVo1BsfwwwHM4SNIn8qn35BffYlgnqpRZ3N8UIwTAGKLa8SbwKpzO1aDuGrGiMYxgA+lrsCMIsAC4VlRsDeOh4wUzsbvIbNG5mfz/iwApnsuH8B3JJEo8YXWAkgpZDYkN2Kxa+24CWCYyd0aqBOmwpLi3AwdjDj6fi7wncSuHQCqCwROg+x0ExQab4XbnkjNmEWl2ygacoFhffiNJu2pxEgyILdnPh73EaVMGfyTfPPXFYyjS+ua7LB/8WTFiEV5ETcTkgMeBC+Sl1foTJ0xbBb7YPrvP23vpXmqn0wlhZ+byQwAsSoH3HStrOuUIHbEbk1nTsoihe9FjNmBC+GJMC9ZURojQItV6s0gMIeEJiuvX+srJuTwH+BBnHUqndixH+J6tEylW6UlJAuHioidbaxKhtcZOSBZdUxPzUUbATBWuwMd7tfgzSyfb9W+WzQ96WAvehEySO9pcnEwD3CEtkZxba3gsP2H3+Xu++qW+Uq7jB0nKkMNu2zLhpBHBYJ+05m9R0XHfIJV5TCm9XNJks+kDGXaP/evohv6mv1Oeb8UQWqiP9afmBIs8WAPZwTdU/sig6i8OW9ZFbY6cPjT8cy6ey/jtoK8Kf1S9dX6G1vSLN0NKUGv7vxbJi1dm3c1Kwi5SQqn2GDRgveohmF407IoWBpCS5O8WazruqpQ2kVBX9P5qyrZ/lugTs4qjix//TfT5HMPVNExvNBR66i9KzDaJNgBE4UwiI/4h0/tLJHt5ET1pMVMq7m3TGIh6ogQn/mWSVCvwFPHGrVzMRFUckP2nmzHj/rmtbshLTqjJw2kzhibHLRoEqhnMHgWoH3fCFrlnHEXmwR3JIw14vrAF8M5lwrRNhVybvEiHYdJYzYPtMYzyQ+ktTZ2tYncMkksGNWVsCcLs1ffmn4HvriGE1w4iDFwGYV1X5CnecrCoHlOQYj">
+    </div>
+    
+    <script type="text/javascript">
+    //<![CDATA[
+    var theForm = document.forms['form1'];
+    if (!theForm) {
+        theForm = document.form1;
+    }
+    function __doPostBack(eventTarget, eventArgument) {
+        if (!theForm.onsubmit || (theForm.onsubmit() != false)) {
+            theForm.__EVENTTARGET.value = eventTarget;
+            theForm.__EVENTARGUMENT.value = eventArgument;
+            theForm.submit();
+        }
+    }
+    //]]>
+    </script>
+    
+    
+    <script src="/netnrega/WebResource.axd?d=CWCHWvX2dZFm_upkcZHx_v9o8VWuPHA7T4SMWbDgCa_sGj1h4dnfiUVlqQBNh95smxPNWOtMdNoCPbURBc3OKIo5tmpzjtLSzetbFLcJgQA1&amp;t=637729818413207958" type="text/javascript"></script>
+    
+    
+    <script src="/netnrega/ScriptResource.axd?d=4lV2-ya1KYBM5HvX2E5-5IWy76dmb07TFwR6amDexwfCHR0nuU76xnWJonjeLo2jsbkzXJP9SPSF7oxs-vlwwpFertrfAf0biEZNSj-t7Z5U5WmMYRhfZI5wq2nAeXgVv32e_e-0_2_CmIs-5N4CRwFYRyB9xETwW0QwK1_yXTY1&amp;t=ffffffffd202a464" type="text/javascript"></script>
+    <script src="/netnrega/ScriptResource.axd?d=3pJOJbLfQlggUtiugjFMyDTWhVAbCviZfsPAE-F49VkE7-g_GfcT2w0wrkNzV7de9Z9Q1k2jY-zK4KwTzbN6lr4w5YT2nBveJju27C8jBQphZIgVZ768KqrdlXVi9qzFJq_NEc7Mgdu9RMxwNZVuI93pA3LCDZ-ku4BGy8YEZuFVywTNI7aT7mpfP0D0IcEA0&amp;t=ffffffffd202a464" type="text/javascript"></script>
+    <script src="/netnrega/ScriptResource.axd?d=UepW9Qaq9_R94W0eHmTYPsKLMFBYKMnnSWOhXBNhJELawp2DGqUtQYBCdjbYg1zsUlejVrbhYe9ua0Ht8ensl_hdnukL4Iga4Ric6BamgGB1YfzyM7s_oTatp5jDDI2nuyVz_3FiBCHI_s1xDoHhk1mCadWgM2_VoS3PHNaQIVk1&amp;t=ffffffff9b7d03cf" type="text/javascript"></script>
+    <script src="/netnrega/ScriptResource.axd?d=G_WG_seVp3qRbePfUUgCteTiqwJDG7DDz0jo7Ol-XQ7ciQahx1COhg9xNlk25N_nsil1L5jtQUuRiL5jwrS6CrcXsCVO0-FWJ38FTBS4TTnpzRrJsKCv1e85RZ3xoqztkBpqoEG0s02mJf-fiupTt6fK5ngwoh4BVuzLmzjJrEQ1&amp;t=ffffffff9b7d03cf" type="text/javascript"></script>
+    <script src="/netnrega/ScriptResource.axd?d=ZsJPEggE82ZM_FUuoRSH1HbRv7F1A67bL9apt37FoR1RnM9uS0KeIAM7Vf56nZtptoHPprdRYcPqndKQbgVRZHZDcASzGY5DNg7P6sp9EfpK0Ry3q1UWX_P1kCz1apzQIJvLwx8Gw58_GusITCkk0GbKAyjZeVQNWNMXAwUar2A1&amp;t=ffffffff9b7d03cf" type="text/javascript"></script>
+    <script src="/netnrega/ScriptResource.axd?d=iMofLWYYzrU9YC1mu6D3CMpt6oW1vLk6lSsC--nsp-ZOqbHBfQKSt_trP6_fznNU1mLZfWH2o3va-O_ltynoR0wzEOymp2e0rFz4uEaGLNYQ0LukVevrK8z7ra1ijCRWu9bWWR5hSMnl6RvMgjPnaf1u4fiWm4o2YP4rzm-g6gc1&amp;t=ffffffff9b7d03cf" type="text/javascript"></script>
+    <script src="/netnrega/ScriptResource.axd?d=3G5jSYGsTssgajZY3M05svtDCwlFK29-gOcA5_ucZnEK1S-SXAP6Ew_pyQFksDfLjVn8laxKc7C73udo8wswmzO70mHh9-jgxp3-nHgOe3ysae1Y7fxMxHGS2sSIPzX2vq_uVipSRjzXw-3uZRwKT-_UIy8dYjA_Fxd41Ey6RJk1&amp;t=ffffffff9b7d03cf" type="text/javascript"></script>
+    <script src="/netnrega/ScriptResource.axd?d=1JH88XljH-oMdtF-TRhj4Z8W1ksgg7UAw3xLOzi3PDq3ptbEeDLPyiwrU4aPOVMTJM7xt54yGmlan8TSrg1IL2J3NkUFimnk7XlJxe6y-D4M4c1eyFKs6zumxGCvJKBCZ_cBuGcPGaD5TeKO5RSiUWdFUWVtmIfV7lQMkmuC12w1&amp;t=ffffffff9b7d03cf" type="text/javascript"></script>
+    <script src="/netnrega/ScriptResource.axd?d=utLzcmWL1BeizGTuunbtDtXHVqWG4emXZGhfrtgzKwlUHQ8WJ0HMshGeiC3qhjyOJH3fg5OgUFAbT3HhuLLyYG5WBioqBZjUjk8p5T7o0OXo_aL4fRumCfzcbdZzHvRV1N29kGfog2XFDlosF4BtjSYn9izhZyVm9wBz2F_7Nns1&amp;t=ffffffff9b7d03cf" type="text/javascript"></script>
+    <script src="/netnrega/ScriptResource.axd?d=LVcR00QXsDFPgrtI5ewcnnfnx-DGjNRYHr87IDKjJo9-tHd87D5v96S5HDrg1NxkP3nSL-tRvL_H86maiUxyhifiiZcXtFTXTqHqWHSTxismvhEt2cPLYmWpgOIkrQ-emRQH4CmK22XJOZNxkK1JU6TnKrv019hVHuTKUB12sCo1&amp;t=ffffffff9b7d03cf" type="text/javascript"></script>
+    <script src="/netnrega/ScriptResource.axd?d=dxJyE_Dejxt-ruGC39tVBpjUePlHYvRBFJPL5dHeTPR06i509yDOqBT6OUg0876f02q0nBTXoWdp1rqpMYnFsQ_nHMNbkkuXSpfqvULLjBFJhFnscKi8WP0xME7dyngbC_BtjGjTWWcRsbA3WAJXFaPgJU_NeAjenQsbE0XFKCw1&amp;t=ffffffff9b7d03cf" type="text/javascript"></script>
+    <div class="aspNetHidden">
+    
+        <input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="0EC02EE4">
+        <input type="hidden" name="__VIEWSTATEENCRYPTED" id="__VIEWSTATEENCRYPTED" value="">
+        <input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="ReG1MBxIyGfeABBL2g0AOkn5lcROrNpB8Qbmy7j2MPS70ICH+3RkXrBXlBV5lguCBvPoG19Y99wIfVrJ1hCPTM+o3yH3iMO13Einl5WLZs9TK8IwLOpxhCIklauCP0k/FR1wEZ0/bH6EMagTWel0zh4xupP/n5twWgTY57TCI4bohO+Y4LYgg1he/wuub5hT6lq9sglKZF11yucZ1sPvuknvKTWHqOMPnmJD7EB/zx6n21NcUswe5bimLhI3UTdAPEjUm5tghDBRH4GL9wtXohYhkbSBnTky1N7xhw8ONMF01q3WuQ4VEuC0Fo1ZXgVL6MxPG4t6TC4a7hGIbrKA+mUiCxaGhaY4vNreJRjFZ24lbBsLAl1XqgOvR5Mkh0apX6J6krsOl0tXcrY0wk/R2neUIZmMGFVNwqJWNyzaFbI=">
+    </div>
+        <div>
+            
+             <table border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#ffe7b7">
+                <tbody><tr>
+                    <td width="17%" bgcolor="#ffffd5">
+                        <font size="6" color="#bd1725" face="verdana"><b></b></font>
+                    </td>
+                    <td width="83%" align="right">
+                        <b><font face="Arial" color="Black" size="2">Govt. of India<br>
+                            Ministry of Rural Development<br>
+                            Department of Rural Development</font></b>
+                    </td>
+                </tr>
+                </tbody></table>
+                <table border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#FFBB55">
+                <tbody><tr>
+                    <td width="50%" bgcolor="#ffffd5" height="21" align="left">
+                        <font face="Arial" size="2" color="#bd1725"><b>
+                           The Mahatma Gandhi National Rural Employment Guarantee Act </b></font>
+                    </td>
+                    <td width="50%" bgcolor="#ffffd5" height="21" align="right">
+                        <font face="Arial" size="2" color="#bd1725">
+                            28-May-2022 06:38:43 PM&nbsp;</font>
+                    </td>
+                </tr>
+            </tbody></table>
+            
+             
+        <script type="text/javascript">
+    //<![CDATA[
+    Sys.WebForms.PageRequestManager._initialize('ctl00$ContentPlaceHolder1$Scriptmanager1', 'form1', [], [], [], 90, 'ctl00');
+    //]]>
+    </script>
+    
+                   <center>
+                    <table border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#87CEFA">
+                        <tbody><tr valign="top">
+                            <td width="7%" bgcolor="#87CEFA" align="right">
+                                <b>
+                                    <a id="ContentPlaceHolder1_back" href="javascript:history.go(-1);">Back</a>&nbsp;&nbsp;
+                                    </b>
+                            </td>
+                        </tr>
+                    </tbody></table>
+                    <font size="4"><b>
+                        <span id="ContentPlaceHolder1_Label1">REGISTER IV- Work Register </span></b></font>
+                    <br>
+                    <br>
+                    <span id="ContentPlaceHolder1_lbl_head"><b>State :</b> WEST BENGAL    <b>District :</b>  NADIA    <b>Block  : </b> KRISHNAGAR-I  <b>Panchayat  : </b> DOGACHI</span>
+                    <br>
+                    <div class="no-print">
+                        <table width="60%">
+                            <tbody><tr>
+                                
+                                <td valign="top">
+                                    <b>From Date </b>
+                                    <input type="image" name="ctl00$ContentPlaceHolder1$ImageButton3" id="ContentPlaceHolder1_ImageButton3" src="Images/cal.png">
+                                    <input name="ctl00$ContentPlaceHolder1$TextBox3" type="text" value="01/04/2021" id="ContentPlaceHolder1_TextBox3" style="width:40%;">
+                                    
+                                </td>
+                                <td valign="top">
+                                    <b>To Date</b>
+                                    <input type="image" name="ctl00$ContentPlaceHolder1$ImageButton4" id="ContentPlaceHolder1_ImageButton4" src="Images/cal.png">
+                                    <input name="ctl00$ContentPlaceHolder1$TextBox4" type="text" value="31/03/2022" id="ContentPlaceHolder1_TextBox4" style="width:40%;">
+                                    
+                                </td>
+                                
+                                <td align="right">
+                                    <span id="ContentPlaceHolder1_Label2"></span>
+                                </td>
+                                <td align="left">
+                                    <b>Rows in single page:</b>&nbsp;&nbsp;<select name="ctl00$ContentPlaceHolder1$ddrows" onchange="javascript:setTimeout('__doPostBack(\'ctl00$ContentPlaceHolder1$ddrows\',\'\')', 0)" id="ContentPlaceHolder1_ddrows" style="width:30%;">
+        <option value="10">10</option>
+        <option value="20">20</option>
+        <option value="30">30</option>
+        <option selected="selected" value="40">40</option>
+    
+    </select>
+                                </td>
+                                <td>
+                                    <b>
+                                        <input type="submit" name="ctl00$ContentPlaceHolder1$Button1" value="submit" id="ContentPlaceHolder1_Button1">
+                                    </b>
+                                </td>
+                            </tr>
+                            <tr>
+                                
+                                <td colspan="4" align="center">
+                                    <table id="ContentPlaceHolder1_RadioButtonList2">
+        <tbody><tr>
+            <td><input id="ContentPlaceHolder1_RadioButtonList2_0" type="radio" name="ctl00$ContentPlaceHolder1$RadioButtonList2" value="0" checked="checked"><label for="ContentPlaceHolder1_RadioButtonList2_0">GP</label></td><td><input id="ContentPlaceHolder1_RadioButtonList2_1" type="radio" name="ctl00$ContentPlaceHolder1$RadioButtonList2" value="1" onclick="javascript:setTimeout('__doPostBack(\'ctl00$ContentPlaceHolder1$RadioButtonList2$1\',\'\')', 0)"><label for="ContentPlaceHolder1_RadioButtonList2_1">Other Than GP</label></td>
+        </tr>
+    </tbody></table>
+                                </td>
+                                
+                            </tr>
+                        </tbody></table>
+                    </div>
+                    <div id="ContentPlaceHolder1_Rprint">
+                    
+                            <table align="center" width="99%" border="1" bordercolor="#EBEBEB" style="border-collapse: collapse" cellspacing="0">
+                                
+                                <tbody><tr bgcolor="#82b4ff">
+                                    <td align="center">
+                                        <b>S No.</b>
+                                    </td>
+                                    <td align="center">
+                                        <b>Work code/Work name</b>
+                                    </td>
+                                    <td align="center">
+                                        <b>Priority no. From the shelf of works</b>
+                                    </td>
+                                    <td align="center">
+                                        <b>Date of TS attach TS </b>
+                                    </td>
+                                    <td align="center">
+                                        <b>Date of AS Attach AS</b>
+                                    </td>
+                                    <td align="center">
+                                        <b>Implementing agency GP/Line Department</b>
+                                    </td>
+                                    <td align="center">
+                                        <b>Date of Starting of work </b>
+                                    </td>
+                                    <td align="center">
+                                        <b>Estimated date of completion</b>
+                                    </td>
+                                    <td align="center">
+                                        <b>Actual Date Of Completion</b>
+                                    </td>
+                                    <td align="center">
+                                        <b>Sanctioned Unskilled</b>
+                                    </td>
+                                    <td align="center">
+                                        <b>Sanctioned Material</b>
+                                    </td>
+                                    <td align="center">
+                                        <b>Page No.</b>
+                                    </td>
+                                </tr>
+                                
+                                <tr bgcolor="#82b4ff" align="center">
+                                    
+                                    <td>
+                                        1
+                                    </td>
+                                    
+                                    <td>
+                                        2
+                                    </td>
+                                    
+                                    <td>
+                                        3
+                                    </td>
+                                    
+                                    <td>
+                                        4
+                                    </td>
+                                    
+                                    <td>
+                                        5
+                                    </td>
+                                    
+                                    <td>
+                                        6
+                                    </td>
+                                    
+                                    <td>
+                                        7
+                                    </td>
+                                    
+                                    <td>
+                                        8
+                                    </td>
+                                    
+                                    <td>
+                                        9
+                                    </td>
+                                    
+                                    <td>
+                                        10
+                                    </td>
+                                    
+                                    <td>
+                                        11
+                                    </td>
+                                    
+                                    <td>
+                                        12
+                                    </td>
+                                    
+                                </tr>
+                        
+                        
+                            <tr>
+                                <td align="center">
+                                    18
+                                </td>
+                                <td align="left">
+                                    <a href="work_register_dtl.aspx?lflag=eng&amp;state_code=32&amp;panchayat_name=DOGACHI&amp;Panchayat_Code=3201009009&amp;fin_year=2022-2023&amp;work_code=3201009009%2fDP%2f321002040959185&amp;state_name=WEST+BENGAL&amp;district_name=NADIA&amp;block_name=KRISHNAGAR-I&amp;dt_work_start=17%2f10%2f2020&amp;dt_work_status=&amp;work_name=Nursery+for+creating+forest+sapling+at+the+land+of+Priyalal+Sarkar+at+Beraberia&amp;Digest=0uf9zwOQpTMiG7FEJa5nbA">3201009009/DP/321002040959185<br>Nursery for creating forest sapling at the land of Priyalal Sarkar at Beraberia
+                                </a></td>
+                                <td align="right">
+                                    6
+                                </td>
+                                <td align="left">
+                                    03/06/2021
+                                </td>
+                                <td align="left">
+                                    03/06/2021
+                                </td>
+                                <td align="left">
+                                    Gram Panchayat
+                                </td>
+                                <td align="left">
+                                    17/10/2020
+                                </td>
+                                <td align="left">
+                                    17/09/2021
+                                </td>
+                                <td align="left">
+                                    
+                                </td>
+                                <td align="right">
+                                    1.520310783
+                                </td>
+                                <td align="right">
+                                    0.1351806
+                                </td>
+                                <td align="right">
+                                    
+                                </td>
+                            </tr>
+                        
+                        
+                            <tr>
+                                <td align="center">
+                                    19
+                                </td>
+                                <td align="left">
+                                    <a href="work_register_dtl.aspx?lflag=eng&amp;state_code=32&amp;panchayat_name=DOGACHI&amp;Panchayat_Code=3201009009&amp;fin_year=2022-2023&amp;work_code=3201009009%2fFP%2fPP%2f1022058&amp;state_name=WEST+BENGAL&amp;district_name=NADIA&amp;block_name=KRISHNAGAR-I&amp;dt_work_start=05%2f02%2f2021&amp;dt_work_status=&amp;work_name=Re-Excavation+Jagar+Khal+at+Bhutpara+XIII&amp;Digest=PBD/6/eOIB/uufOo/B7Fag">3201009009/FP/PP/1022058<br>Re-Excavation Jagar Khal at Bhutpara XIII
+                                </a></td>
+                                <td align="right">
+                                    1022058
+                                </td>
+                                <td align="left">
+                                    03/06/2021
+                                </td>
+                                <td align="left">
+                                    03/06/2021
+                                </td>
+                                <td align="left">
+                                    Gram Panchayat
+                                </td>
+                                <td align="left">
+                                    05/02/2021
+                                </td>
+                                <td align="left">
+                                    05/01/2022
+                                </td>
+                                <td align="left">
+                                    
+                                </td>
+                                <td align="right">
+                                    4.268386782
+                                </td>
+                                <td align="right">
+                                    0.05
+                                </td>
+                                <td align="right">
+                                    
+                                </td>
+                            </tr>
+                        
+                        
+                            <tr>
+                                <td align="center">
+                                    20
+                                </td>
+                                <td align="left">
+                                    <a href="work_register_dtl.aspx?lflag=eng&amp;state_code=32&amp;panchayat_name=DOGACHI&amp;Panchayat_Code=3201009009&amp;fin_year=2022-2023&amp;work_code=3201009009%2fFP%2fPP%2f1022060&amp;state_name=WEST+BENGAL&amp;district_name=NADIA&amp;block_name=KRISHNAGAR-I&amp;dt_work_start=20%2f02%2f2021&amp;dt_work_status=&amp;work_name=EW+for+Jhupjhupi+Khal+at+Bhutpara+XIII&amp;Digest=/OGup+eFzlRWB8O3zLp7kw">3201009009/FP/PP/1022060<br>EW for Jhupjhupi Khal at Bhutpara XIII
+                                </a></td>
+                                <td align="right">
+                                    1022060
+                                </td>
+                                <td align="left">
+                                    10/06/2021
+                                </td>
+                                <td align="left">
+                                    10/06/2021
+                                </td>
+                                <td align="left">
+                                    Gram Panchayat
+                                </td>
+                                <td align="left">
+                                    20/02/2021
+                                </td>
+                                <td align="left">
+                                    20/01/2022
+                                </td>
+                                <td align="left">
+                                    
+                                </td>
+                                <td align="right">
+                                    4.416002076
+                                </td>
+                                <td align="right">
+                                    0.05
+                                </td>
+                                <td align="right">
+                                    
+                                </td>
+                            </tr>
+                        
+                        
+                            <tr>
+                                <td align="center">
+                                    21
+                                </td>
+                                <td align="left">
+                                    <a href="work_register_dtl.aspx?lflag=eng&amp;state_code=32&amp;panchayat_name=DOGACHI&amp;Panchayat_Code=3201009009&amp;fin_year=2022-2023&amp;work_code=3201009009%2fIF%2f321002041279450&amp;state_name=WEST+BENGAL&amp;district_name=NADIA&amp;block_name=KRISHNAGAR-I&amp;dt_work_start=15%2f07%2f2021&amp;dt_work_status=&amp;work_name=Plantation+of+Lichi+plant+at+the+land+of+Subhash+Chakrabarty+at+Goaldaha&amp;Digest=Q7+6NcZIZMR5dod+8l2Dtw">3201009009/IF/321002041279450<br>Plantation of Lichi plant at the land of Subhash Chakrabarty at Goaldaha
+                                </a></td>
+                                <td align="right">
+                                    170
+                                </td>
+                                <td align="left">
+                                    30/06/2021
+                                </td>
+                                <td align="left">
+                                    30/06/2021
+                                </td>
+                                <td align="left">
+                                    Gram Panchayat
+                                </td>
+                                <td align="left">
+                                    15/07/2021
+                                </td>
+                                <td align="left">
+                                    15/07/2022
+                                </td>
+                                <td align="left">
+                                    
+                                </td>
+                                <td align="right">
+                                    0.1901578
+                                </td>
+                                <td align="right">
+                                    0.0311893
+                                </td>
+                                <td align="right">
+                                    
+                                </td>
+                            </tr>
+                        
+                        
+                            <tr>
+                                <td align="center">
+                                    22
+                                </td>
+                                <td align="left">
+                                    <a href="work_register_dtl.aspx?lflag=eng&amp;state_code=32&amp;panchayat_name=DOGACHI&amp;Panchayat_Code=3201009009&amp;fin_year=2022-2023&amp;work_code=3201009009%2fIF%2f321002041279452&amp;state_name=WEST+BENGAL&amp;district_name=NADIA&amp;block_name=KRISHNAGAR-I&amp;dt_work_start=15%2f07%2f2021&amp;dt_work_status=&amp;work_name=Plantation+of+Mango+plant+at+the+land+of+Soumick+Chakrabarty+at+Goaldaha&amp;Digest=T28Xu8RgINVMsHkThdsN6A">3201009009/IF/321002041279452<br>Plantation of Mango plant at the land of Soumick Chakrabarty at Goaldaha
+                                </a></td>
+                                <td align="right">
+                                    180
+                                </td>
+                                <td align="left">
+                                    30/06/2021
+                                </td>
+                                <td align="left">
+                                    30/06/2021
+                                </td>
+                                <td align="left">
+                                    Gram Panchayat
+                                </td>
+                                <td align="left">
+                                    15/07/2021
+                                </td>
+                                <td align="left">
+                                    15/07/2022
+                                </td>
+                                <td align="left">
+                                    
+                                </td>
+                                <td align="right">
+                                    0.0950787
+                                </td>
+                                <td align="right">
+                                    0.0305946
+                                </td>
+                                <td align="right">
+                                    
+                                </td>
+                            </tr>
+                        
+                        
+                            <tr>
+                                <td align="center">
+                                    23
+                                </td>
+                                <td align="left">
+                                    <a href="work_register_dtl.aspx?lflag=eng&amp;state_code=32&amp;panchayat_name=DOGACHI&amp;Panchayat_Code=3201009009&amp;fin_year=2022-2023&amp;work_code=3201009009%2fIF%2fIAY%2f3704840&amp;state_name=WEST+BENGAL&amp;district_name=NADIA&amp;block_name=KRISHNAGAR-I&amp;dt_work_start=17%2f06%2f2021&amp;dt_work_status=&amp;work_name=Construction+of+PMAY-G+House+for+Individuals+-PMAY-G++REG.+NO.+WB2316488&amp;Digest=4pHUxB+2rD0sT2i8yN7nSQ">3201009009/IF/IAY/3704840<br>Construction of PMAY-G House for Individuals -PMAY-G  REG. NO. WB2316488
+                                </a></td>
+                                <td align="right">
+                                    3704840
+                                </td>
+                                <td align="left">
+                                    02/04/2021
+                                </td>
+                                <td align="left">
+                                    02/04/2021
+                                </td>
+                                <td align="left">
+                                    Gram Panchayat
+                                </td>
+                                <td align="left">
+                                    17/06/2021
+                                </td>
+                                <td align="left">
+                                    17/07/2021
+                                </td>
+                                <td align="left">
+                                    
+                                </td>
+                                <td align="right">
+                                    0.1917
+                                </td>
+                                <td align="right">
+                                    0
+                                </td>
+                                <td align="right">
+                                    
+                                </td>
+                            </tr>
+                        
+                        
+                            <tr>
+                                <td align="center">
+                                    24
+                                </td>
+                                <td align="left">
+                                    <a href="work_register_dtl.aspx?lflag=eng&amp;state_code=32&amp;panchayat_name=DOGACHI&amp;Panchayat_Code=3201009009&amp;fin_year=2022-2023&amp;work_code=3201009009%2fIF%2fIAY%2f4117311&amp;state_name=WEST+BENGAL&amp;district_name=NADIA&amp;block_name=KRISHNAGAR-I&amp;dt_work_start=01%2f04%2f2021&amp;dt_work_status=&amp;work_name=Construction+of+PMAY-G+House+for+Individuals+-PMAY-G++REG.+NO.+WB5688139&amp;Digest=eQMybFvW/GwzG1MW5jiyVQ">3201009009/IF/IAY/4117311<br>Construction of PMAY-G House for Individuals -PMAY-G  REG. NO. WB5688139
+                                </a></td>
+                                <td align="right">
+                                    4117311
+                                </td>
+                                <td align="left">
+                                    02/04/2021
+                                </td>
+                                <td align="left">
+                                    02/04/2021
+                                </td>
+                                <td align="left">
+                                    Gram Panchayat
+                                </td>
+                                <td align="left">
+                                    01/04/2021
+                                </td>
+                                <td align="left">
+                                    01/05/2021
+                                </td>
+                                <td align="left">
+                                    
+                                </td>
+                                <td align="right">
+                                    0.1917
+                                </td>
+                                <td align="right">
+                                    0
+                                </td>
+                                <td align="right">
+                                    
+                                </td>
+                            </tr>
+                        
+                        
+                            <tr>
+                                <td align="center">
+                                    25
+                                </td>
+                                <td align="left">
+                                    <a href="work_register_dtl.aspx?lflag=eng&amp;state_code=32&amp;panchayat_name=DOGACHI&amp;Panchayat_Code=3201009009&amp;fin_year=2022-2023&amp;work_code=3201009009%2fIF%2fIAY%2f4710596&amp;state_name=WEST+BENGAL&amp;district_name=NADIA&amp;block_name=KRISHNAGAR-I&amp;dt_work_start=15%2f07%2f2021&amp;dt_work_status=&amp;work_name=Construction+of+PMAY-G+House+for+Individuals+-PMAY-G++REG.+NO.+WB2281384&amp;Digest=pjtrRqoDkVFOgX+tfwOcCg">3201009009/IF/IAY/4710596<br>Construction of PMAY-G House for Individuals -PMAY-G  REG. NO. WB2281384
+                                </a></td>
+                                <td align="right">
+                                    4710596
+                                </td>
+                                <td align="left">
+                                    02/04/2021
+                                </td>
+                                <td align="left">
+                                    02/04/2021
+                                </td>
+                                <td align="left">
+                                    Gram Panchayat
+                                </td>
+                                <td align="left">
+                                    15/07/2021
+                                </td>
+                                <td align="left">
+                                    15/08/2021
+                                </td>
+                                <td align="left">
+                                    
+                                </td>
+                                <td align="right">
+                                    0.1917
+                                </td>
+                                <td align="right">
+                                    0
+                                </td>
+                                <td align="right">
+                                    
+                                </td>
+                            </tr>
+                        
+                        
+                            <tr>
+                                <td align="center">
+                                    26
+                                </td>
+                                <td align="left">
+                                    <a href="work_register_dtl.aspx?lflag=eng&amp;state_code=32&amp;panchayat_name=DOGACHI&amp;Panchayat_Code=3201009009&amp;fin_year=2022-2023&amp;work_code=3201009009%2fRC%2f320201060618251&amp;state_name=WEST+BENGAL&amp;district_name=NADIA&amp;block_name=KRISHNAGAR-I&amp;dt_work_start=07%2f07%2f2021&amp;dt_work_status=&amp;work_name=Earth+work+for+road+with+Jhama+Bats+from+the+kall+ghar+of+Bhim+Sarkar+to+the+Pond+of+Priyolal+Sarkar&amp;Digest=Vn0xjqSqBIgmhtj3D3AEwg">3201009009/RC/320201060618251<br>Earth work for road with Jhama Bats from the kall ghar of Bhim Sarkar to the Pond of Priyolal Sarkar
+                                </a></td>
+                                <td align="right">
+                                    37
+                                </td>
+                                <td align="left">
+                                    07/07/2021
+                                </td>
+                                <td align="left">
+                                    07/07/2021
+                                </td>
+                                <td align="left">
+                                    Gram Panchayat
+                                </td>
+                                <td align="left">
+                                    07/07/2021
+                                </td>
+                                <td align="left">
+                                    07/07/2022
+                                </td>
+                                <td align="left">
+                                    
+                                </td>
+                                <td align="right">
+                                    1.5947144
+                                </td>
+                                <td align="right">
+                                    1.7977114
+                                </td>
+                                <td align="right">
+                                    
+                                </td>
+                            </tr>
+                        
+                        
+                            <tr>
+                                <td align="center">
+                                    27
+                                </td>
+                                <td align="left">
+                                    <a href="work_register_dtl.aspx?lflag=eng&amp;state_code=32&amp;panchayat_name=DOGACHI&amp;Panchayat_Code=3201009009&amp;fin_year=2022-2023&amp;work_code=3201009009%2fRC%2fGIS%2f1386291&amp;state_name=WEST+BENGAL&amp;district_name=NADIA&amp;block_name=KRISHNAGAR-I&amp;dt_work_start=18%2f08%2f2021&amp;dt_work_status=&amp;work_name=Earthwork+for+road+with+Jhama+Bats+from+the+HO+Rabi+Sardar+to+the+HO+Samar+Sardar+at+Butpara&amp;Digest=VJCoclYnDVYtPx0gbn/+Hg">3201009009/RC/GIS/1386291<br>Earthwork for road with Jhama Bats from the HO Rabi Sardar to the HO Samar Sardar at Butpara
+                                </a></td>
+                                <td align="right">
+                                    1386319
+                                </td>
+                                <td align="left">
+                                    12/08/2021
+                                </td>
+                                <td align="left">
+                                    12/08/2021
+                                </td>
+                                <td align="left">
+                                    Gram Panchayat
+                                </td>
+                                <td align="left">
+                                    18/08/2021
+                                </td>
+                                <td align="left">
+                                    18/08/2022
+                                </td>
+                                <td align="left">
+                                    
+                                </td>
+                                <td align="right">
+                                    1.5857062
+                                </td>
+                                <td align="right">
+                                    1.7508369
+                                </td>
+                                <td align="right">
+                                    
+                                </td>
+                            </tr>
+                        
+                        
+                            <tr>
+                                <td align="center">
+                                    28
+                                </td>
+                                <td align="left">
+                                    <a href="work_register_dtl.aspx?lflag=eng&amp;state_code=32&amp;panchayat_name=DOGACHI&amp;Panchayat_Code=3201009009&amp;fin_year=2022-2023&amp;work_code=3201009009%2fRC%2fGIS%2f1386321&amp;state_name=WEST+BENGAL&amp;district_name=NADIA&amp;block_name=KRISHNAGAR-I&amp;dt_work_start=18%2f08%2f2021&amp;dt_work_status=&amp;work_name=Earthwork+for+road+with+Jhama+Bats+from+the+HO+Suroj+Sardar+to+the+HO+Bhola+Sardar+at+Butpara&amp;Digest=u4nFdwrfNG6lNfJWfKxxIw">3201009009/RC/GIS/1386321<br>Earthwork for road with Jhama Bats from the HO Suroj Sardar to the HO Bhola Sardar at Butpara
+                                </a></td>
+                                <td align="right">
+                                    1386329
+                                </td>
+                                <td align="left">
+                                    12/08/2021
+                                </td>
+                                <td align="left">
+                                    12/08/2021
+                                </td>
+                                <td align="left">
+                                    Gram Panchayat
+                                </td>
+                                <td align="left">
+                                    18/08/2021
+                                </td>
+                                <td align="left">
+                                    18/08/2022
+                                </td>
+                                <td align="left">
+                                    
+                                </td>
+                                <td align="right">
+                                    1.5766976
+                                </td>
+                                <td align="right">
+                                    1.7416845
+                                </td>
+                                <td align="right">
+                                    
+                                </td>
+                            </tr>
+                        
+                        
+                            <tr>
+                                <td align="center">
+                                    29
+                                </td>
+                                <td align="left">
+                                    <a href="work_register_dtl.aspx?lflag=eng&amp;state_code=32&amp;panchayat_name=DOGACHI&amp;Panchayat_Code=3201009009&amp;fin_year=2022-2023&amp;work_code=3201009009%2fRC%2fGIS%2f1386337&amp;state_name=WEST+BENGAL&amp;district_name=NADIA&amp;block_name=KRISHNAGAR-I&amp;dt_work_start=02%2f10%2f2021&amp;dt_work_status=&amp;work_name=Earthwork+for+road+with+Jhama+Bats+from+the+HO+Aswin+Sardar+to+the+HO+Dilip+Sardar+at+Butpara&amp;Digest=HJtZuiwRuotkNnbXrJJc8A">3201009009/RC/GIS/1386337<br>Earthwork for road with Jhama Bats from the HO Aswin Sardar to the HO Dilip Sardar at Butpara
+                                </a></td>
+                                <td align="right">
+                                    1386346
+                                </td>
+                                <td align="left">
+                                    13/08/2021
+                                </td>
+                                <td align="left">
+                                    13/08/2021
+                                </td>
+                                <td align="left">
+                                    Gram Panchayat
+                                </td>
+                                <td align="left">
+                                    02/10/2021
+                                </td>
+                                <td align="left">
+                                    02/10/2022
+                                </td>
+                                <td align="left">
+                                    
+                                </td>
+                                <td align="right">
+                                    1.6037254
+                                </td>
+                                <td align="right">
+                                    1.7691419
+                                </td>
+                                <td align="right">
+                                    
+                                </td>
+                            </tr>
+                        
+                        
+                            <tr>
+                                <td align="center">
+                                    30
+                                </td>
+                                <td align="left">
+                                    <a href="work_register_dtl.aspx?lflag=eng&amp;state_code=32&amp;panchayat_name=DOGACHI&amp;Panchayat_Code=3201009009&amp;fin_year=2022-2023&amp;work_code=3201009009%2fRC%2fGIS%2f1388721&amp;state_name=WEST+BENGAL&amp;district_name=NADIA&amp;block_name=KRISHNAGAR-I&amp;dt_work_start=23%2f08%2f2021&amp;dt_work_status=&amp;work_name=Earthwork+for+road+with+Jhama+Bats+from+the+HO+Prafulla+Barui+to+the+HO+Prem+Chand+Sarkar+at+Berab&amp;Digest=M3b02ZUuZjuSItuhYtFneA">3201009009/RC/GIS/1388721<br>Earthwork for road with Jhama Bats from the HO Prafulla Barui to the HO Prem Chand Sarkar at Berab
+                                </a></td>
+                                <td align="right">
+                                    1388727
+                                </td>
+                                <td align="left">
+                                    10/08/2021
+                                </td>
+                                <td align="left">
+                                    10/08/2021
+                                </td>
+                                <td align="left">
+                                    Gram Panchayat
+                                </td>
+                                <td align="left">
+                                    23/08/2021
+                                </td>
+                                <td align="left">
+                                    23/08/2022
+                                </td>
+                                <td align="left">
+                                    
+                                </td>
+                                <td align="right">
+                                    1.612734
+                                </td>
+                                <td align="right">
+                                    1.7782945
+                                </td>
+                                <td align="right">
+                                    
+                                </td>
+                            </tr>
+                        
+                        
+                            <tr>
+                                <td align="center">
+                                    31
+                                </td>
+                                <td align="left">
+                                    <a href="work_register_dtl.aspx?lflag=eng&amp;state_code=32&amp;panchayat_name=DOGACHI&amp;Panchayat_Code=3201009009&amp;fin_year=2022-2023&amp;work_code=3201009009%2fRC%2fGIS%2f1388738&amp;state_name=WEST+BENGAL&amp;district_name=NADIA&amp;block_name=KRISHNAGAR-I&amp;dt_work_start=15%2f07%2f2021&amp;dt_work_status=&amp;work_name=Earthwork+for+road+with+Jhama+Bats+from+the+LO+Kartick+Mondal+to+the+HO+Prafulla+Barui+at+Beraberi&amp;Digest=zfTeNQU4mk/KCxkFTgkZ1g">3201009009/RC/GIS/1388738<br>Earthwork for road with Jhama Bats from the LO Kartick Mondal to the HO Prafulla Barui at Beraberi
+                                </a></td>
+                                <td align="right">
+                                    1388745
+                                </td>
+                                <td align="left">
+                                    13/08/2021
+                                </td>
+                                <td align="left">
+                                    13/08/2021
+                                </td>
+                                <td align="left">
+                                    Gram Panchayat
+                                </td>
+                                <td align="left">
+                                    15/07/2021
+                                </td>
+                                <td align="left">
+                                    15/06/2022
+                                </td>
+                                <td align="left">
+                                    
+                                </td>
+                                <td align="right">
+                                    1.612734
+                                </td>
+                                <td align="right">
+                                    1.7782945
+                                </td>
+                                <td align="right">
+                                    
+                                </td>
+                            </tr>
+                        
+                        
+                            <tr>
+                                <td align="center">
+                                    32
+                                </td>
+                                <td align="left">
+                                    <a href="work_register_dtl.aspx?lflag=eng&amp;state_code=32&amp;panchayat_name=DOGACHI&amp;Panchayat_Code=3201009009&amp;fin_year=2022-2023&amp;work_code=3201009009%2fRC%2fGIS%2f1388748&amp;state_name=WEST+BENGAL&amp;district_name=NADIA&amp;block_name=KRISHNAGAR-I&amp;dt_work_start=23%2f08%2f2021&amp;dt_work_status=&amp;work_name=Earthwork+for+road+with+Jhama+Bats+from+the+HO+Narugopal+Ray+to+the+HO+Subhash+Ray+at+Mahishnangra&amp;Digest=muFrWx0x0wrYeFigwJVd2A">3201009009/RC/GIS/1388748<br>Earthwork for road with Jhama Bats from the HO Narugopal Ray to the HO Subhash Ray at Mahishnangra
+                                </a></td>
+                                <td align="right">
+                                    1388761
+                                </td>
+                                <td align="left">
+                                    10/08/2021
+                                </td>
+                                <td align="left">
+                                    10/08/2021
+                                </td>
+                                <td align="left">
+                                    Gram Panchayat
+                                </td>
+                                <td align="left">
+                                    23/08/2021
+                                </td>
+                                <td align="left">
+                                    23/08/2022
+                                </td>
+                                <td align="left">
+                                    
+                                </td>
+                                <td align="right">
+                                    1.5496673
+                                </td>
+                                <td align="right">
+                                    1.714227
+                                </td>
+                                <td align="right">
+                                    
+                                </td>
+                            </tr>
+                        
+                        
+                            <tr>
+                                <td align="center">
+                                    33
+                                </td>
+                                <td align="left">
+                                    <a href="work_register_dtl.aspx?lflag=eng&amp;state_code=32&amp;panchayat_name=DOGACHI&amp;Panchayat_Code=3201009009&amp;fin_year=2022-2023&amp;work_code=3201009009%2fRC%2fGIS%2f1405980&amp;state_name=WEST+BENGAL&amp;district_name=NADIA&amp;block_name=KRISHNAGAR-I&amp;dt_work_start=21%2f11%2f2021&amp;dt_work_status=&amp;work_name=Earthwork+for+road+with+Jhama+Bats+from+the+Shop+of+Haralal+Sarkar+to+the+L%2fO+Priyolal+Sarkar++at+Be&amp;Digest=GBwAn+mA4NiwshziT+yqXg">3201009009/RC/GIS/1405980<br>Earthwork for road with Jhama Bats from the Shop of Haralal Sarkar to the L/O Priyolal Sarkar  at Be
+                                </a></td>
+                                <td align="right">
+                                    1405983
+                                </td>
+                                <td align="left">
+                                    13/08/2021
+                                </td>
+                                <td align="left">
+                                    13/08/2021
+                                </td>
+                                <td align="left">
+                                    Gram Panchayat
+                                </td>
+                                <td align="left">
+                                    21/11/2021
+                                </td>
+                                <td align="left">
+                                    21/11/2022
+                                </td>
+                                <td align="left">
+                                    
+                                </td>
+                                <td align="right">
+                                    1.5857062
+                                </td>
+                                <td align="right">
+                                    1.7508369
+                                </td>
+                                <td align="right">
+                                    
+                                </td>
+                            </tr>
+                        
+                        
+                            <tr>
+                                <td align="center">
+                                    34
+                                </td>
+                                <td align="left">
+                                    <a href="work_register_dtl.aspx?lflag=eng&amp;state_code=32&amp;panchayat_name=DOGACHI&amp;Panchayat_Code=3201009009&amp;fin_year=2022-2023&amp;work_code=3201009009%2fWC%2f321002040926957&amp;state_name=WEST+BENGAL&amp;district_name=NADIA&amp;block_name=KRISHNAGAR-I&amp;dt_work_start=01%2f07%2f2021&amp;dt_work_status=&amp;work_name=Excavation+of+farm+pond+at+the+land+of+Subhash+Mondal+Beraberia&amp;Digest=4dWrIMxJP4ZZRlJTJMF02w">3201009009/WC/321002040926957<br>Excavation of farm pond at the land of Subhash Mondal Beraberia
+                                </a></td>
+                                <td align="right">
+                                    22
+                                </td>
+                                <td align="left">
+                                    23/06/2021
+                                </td>
+                                <td align="left">
+                                    23/06/2021
+                                </td>
+                                <td align="left">
+                                    Gram Panchayat
+                                </td>
+                                <td align="left">
+                                    01/07/2021
+                                </td>
+                                <td align="left">
+                                    01/07/2022
+                                </td>
+                                <td align="left">
+                                    
+                                </td>
+                                <td align="right">
+                                    1.8652007
+                                </td>
+                                <td align="right">
+                                    0.03
+                                </td>
+                                <td align="right">
+                                    
+                                </td>
+                            </tr>
+                        
+                        
+                            <tr>
+                                <td align="center">
+                                    
+                                </td>
+                                <td align="left">
+                                    <b>Total</b>
+                                </td>
+                                <td align="right">
+                                    
+                                </td>
+                                <td align="left">
+                                    
+                                </td>
+                                <td align="left">
+                                    
+                                </td>
+                                <td align="left">
+                                    
+                                </td>
+                                <td align="left">
+                                    
+                                </td>
+                                <td align="left">
+                                    
+                                </td>
+                                <td align="left">
+                                    
+                                </td>
+                                <td align="right">
+                                    <b>25.651921941 </b>
+                                </td>
+                                <td align="right">
+                                    <b>14.4079921 </b>
+                                </td>
+                                <td align="right">
+                                    
+                                </td>
+                            </tr>
+                        
+                            </tbody></table>
+                        
+                    </div>
+                    <br>
+                    <a id="ContentPlaceHolder1_LinkButton1" href="javascript:__doPostBack('ctl00$ContentPlaceHolder1$LinkButton1','')">Download In Excel</a>&nbsp;
+                    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <a href="javascript:window.print()" id="ContentPlaceHolder1_Print">Print</a><br>
+                    
+                </center>
+        
+        </div>
+        
+    
+    <script type="text/javascript">
+    //<![CDATA[
+    Sys.Application.add_init(function() {
+        $create(AjaxControlToolkit.CalendarBehavior, {"button":$get("ContentPlaceHolder1_ImageButton3"),"format":"dd/MM/yyyy","id":"ContentPlaceHolder1_CalendarExtender3"}, null, null, $get("ContentPlaceHolder1_TextBox3"));
+    });
+    Sys.Application.add_init(function() {
+        $create(AjaxControlToolkit.CalendarBehavior, {"button":$get("ContentPlaceHolder1_ImageButton4"),"format":"dd/MM/yyyy","id":"ContentPlaceHolder1_CalendarExtender4"}, null, null, $get("ContentPlaceHolder1_TextBox4"));
+    });
+    //]]>
+    </script>
+    </form>
+    
+    
+    </body></html>
