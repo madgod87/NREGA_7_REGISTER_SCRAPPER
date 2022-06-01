@@ -26,4 +26,3 @@ class WorkRegister(scrapy.Spider):
 
         print(all_links)
         pdfkit.from_url(all_links, r"./Sripur_20-21_register4_Part_B.pdf", configuration=config, options=options)
-        # pdfkit.from_url(all_links, "D:\Documents\Register_4_Part_B\register4_Part_B.pdf", configuration=config)
