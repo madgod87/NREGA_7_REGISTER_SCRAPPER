@@ -3,11 +3,11 @@ import logging
 
 class AssetSpider(scrapy.Spider):
     name = 'asset'
-    start_urls = ['http://mnregaweb4.nic.in/netnrega/asset_report_dtl.aspx?lflag=eng&state_name=WEST%20BENGAL&state_code=32&district_name=BIRBHUM&district_code=3203&block_name=BOLPUR-SRINIKETAN&block_code=&panchayat_name=BAHIRI-PANCHSHOWA&panchayat_code=3203011001&fin_year=2022-2023&source=national&Digest=t0McyhmLWhm8CgFKwoViWA']
+    start_urls = ['http://mnregaweb4.nic.in/netnrega/asset_report_dtl.aspx?lflag=eng&state_name=WEST%20BENGAL&state_code=32&district_name=BANKURA&district_code=3213&block_name=PATRASAYER&block_code=&panchayat_name=BEUR%20BETUR&panchayat_code=3213010005&fin_year=2022-2023&source=national&Digest=oICRXOmWabpmuqTOv8ZYCw']
 
     def parse(self, response):
         i = 4
-        while i<4699:
+        while i<1490:
             assetid = response.xpath('//table[2]//tr[$i]/td[2]/text()', i=i).get()
             assetname = response.xpath('//table[2]//tr[$i]/td[3]/text()', i=i).get()
             schemecode = response.xpath('//table[2]//tr[$i]/td[5]/text()', i=i).get()
