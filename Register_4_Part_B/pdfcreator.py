@@ -9,7 +9,7 @@ options = {'page-size': 'A4'}
 
 class WorkRegister(scrapy.Spider):
     name = "WorkRegister_PartB"
-    start_urls = ['http://127.0.0.1:9112/sripur2021.html']
+    start_urls = ['http://127.0.0.1:4820/Register_4_Part_B/index.html']
 
     def parse(self, response):
         trees = response.xpath('//div[3]//div[2]/table//tr')
