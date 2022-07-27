@@ -1,20 +1,19 @@
-from unicodedata import numeric
 import scrapy
 import requests
 
 class RegisterscrapperSpider(scrapy.Spider):
     name = 'registerScrapper'
 # Bhandaria Kastekumari GP
-    start_urls = ['http://mnregaweb4.nic.in/netnrega/writereaddata/citizen_out/MW_3211010006_GP_2122_eng.html']
+    start_urls = ['http://mnregaweb4.nic.in/netnrega/writereaddata/citizen_out/MW_3211010006_GP_2021_eng.html']
 
     mrNumbers = []
-    numeric = 1
+    countingNumber = 1
 # Declaring First Function
     def parse(self, response):
         trees = response.xpath('//table[2]//tr')
 # Looping through Each TREE Element
         for tree in trees:
-            if self.numeric<1001:
+            if self.countingNumber<1001:
     # Finding Scheme Name Element
                 workname = tree.xpath('.//td/text()').get()
     # Condition to Ignore Scheme Name Element
@@ -101,7 +100,8 @@ class RegisterscrapperSpider(scrapy.Spider):
                                     'wage_per_day':wage_per_day,
                                     'wagelist_number':wagelist_number
                                     }
-                self.numeric+=1
+                print(f"This is {self.countingNumber} !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+                self.countingNumber+=1
             else:
-                print(numeric)
-                self.numeric+=1
+                print(self.countingNumber)
+                self.countingNumber+=1

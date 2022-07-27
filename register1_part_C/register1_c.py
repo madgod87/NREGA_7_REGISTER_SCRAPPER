@@ -2,8 +2,7 @@ import scrapy
 
 class Register1PartB(scrapy.Spider):
     name = 'Register_1_Part_C'
-    start_urls = ['http://127.0.0.1:10148/register1_part_C/q3.html']
-
+    start_urls = ['http://127.0.0.1:5555/register1_part_C/Raspunja21-22/q4.html','http://127.0.0.1:5555/register1_part_C/Raspunja21-22/q3.html','http://127.0.0.1:5555/register1_part_C/Raspunja21-22/q2.html','http://127.0.0.1:5555/register1_part_C/Raspunja21-22/q1.html']
     def parse(self, response):
         tables = response.xpath('//div[3]/center/div[2]/table')
         for table in tables:
