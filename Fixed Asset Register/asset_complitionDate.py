@@ -2,11 +2,10 @@ import scrapy
 
 class AssetSpider(scrapy.Spider):
     name = 'AssetRegister'
-    start_urls = ['https://mnregaweb2.nic.in/netnrega/writereaddata/citizen_out/assetscreated_Out_1819_3211010006_05_ALL_ALL_local.html',
-                'https://mnregaweb2.nic.in/netnrega/writereaddata/citizen_out/assetscreated_Out_1920_3211010006_05_ALL_ALL_local.html',
-                'https://mnregaweb2.nic.in/netnrega/writereaddata/citizen_out/assetscreated_Out_2021_3211010006_05_ALL_ALL_local.html',
-                'https://mnregaweb2.nic.in/netnrega/writereaddata/citizen_out/assetscreated_Out_2122_3211010006_05_ALL_ALL_local.html',
-                'https://mnregaweb2.nic.in/netnrega/writereaddata/citizen_out/assetscreated_Out_2223_3211010006_05_ALL_ALL_local.html'
+    start_urls = ['https://mnregaweb2.nic.in/netnrega/writereaddata/citizen_out/assetscreated_Out_1819_3216014006_05_ALL_ALL_local.htm',
+                'https://mnregaweb2.nic.in/netnrega/writereaddata/citizen_out/assetscreated_Out_1920_3216014006_05_ALL_ALL_local.html',
+                'https://mnregaweb2.nic.in/netnrega/writereaddata/citizen_out/assetscreated_Out_2021_3216014006_05_ALL_ALL_local.html',
+                'https://mnregaweb2.nic.in/netnrega/writereaddata/citizen_out/assetscreated_Out_2122_3216014006_05_ALL_ALL_local.html'
                     ]
 
     def parse(self, response):
