@@ -4,10 +4,10 @@ import requests
 class RegisterscrapperSpider(scrapy.Spider):
     name = 'registerScrapper'
 # Bhandaria Kastekumari GP
-    start_urls = ['http://mnregaweb4.nic.in/netnrega/writereaddata/citizen_out/MW_3216014006_GP_1920_eng.html']
+    start_urls = ['http://mnregaweb4.nic.in/netnrega/writereaddata/citizen_out/MW_3201009009_GP_2122_eng.html']
 
     mrNumbers = []
-
+    countingNumber = 1
 # Declaring First Function
     def parse(self, response):
         trees = response.xpath('//table[2]//tr')
@@ -99,4 +99,7 @@ class RegisterscrapperSpider(scrapy.Spider):
                                 'wage_per_day':wage_per_day,
                                 'wagelist_number':wagelist_number
                                 }
+            print(self.countingNumber)
+            self.countingNumber+=1
+
 
