@@ -2,11 +2,11 @@ import scrapy
 
 class AssetSpider(scrapy.Spider):
     name = 'AssetRegister'
-    start_urls = ['https://mnregaweb2.nic.in/netnrega/writereaddata/citizen_out/assetscreated_Out_1819_3201010001_05_ALL_ALL_local.html',
-                'https://mnregaweb2.nic.in/netnrega/writereaddata/citizen_out/assetscreated_Out_1920_3201010001_05_ALL_ALL_local.html',
-                'https://mnregaweb2.nic.in/netnrega/writereaddata/citizen_out/assetscreated_Out_2021_3201010001_05_ALL_ALL_local.html',
-                'https://mnregaweb2.nic.in/netnrega/writereaddata/citizen_out/assetscreated_Out_2122_3201010001_05_ALL_ALL_local.html',
-                'https://mnregaweb2.nic.in/netnrega/writereaddata/citizen_out/assetscreated_Out_2223_3201010001_05_ALL_ALL_local.html'
+    start_urls = ['https://mnregaweb2.nic.in/netnrega/writereaddata/citizen_out/assetscreated_Out_1819_3201009008_05_ALL_ALL_local.html',
+                'https://mnregaweb2.nic.in/netnrega/writereaddata/citizen_out/assetscreated_Out_1920_3201009008_05_ALL_ALL_local.html',
+                'https://mnregaweb2.nic.in/netnrega/writereaddata/citizen_out/assetscreated_Out_2021_3201009008_05_ALL_ALL_local.html',
+                'https://mnregaweb2.nic.in/netnrega/writereaddata/citizen_out/assetscreated_Out_2122_3201009008_05_ALL_ALL_local.html',
+                'https://mnregaweb2.nic.in/netnrega/writereaddata/citizen_out/assetscreated_Out_2223_3201009008_05_ALL_ALL_local.html'
                     ]
 
     def parse(self, response):
