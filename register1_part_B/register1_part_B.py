@@ -3,7 +3,7 @@ import scrapy
 class Register1PartB(scrapy.Spider):
     name = 'Register_1_Part_B'
 
-    start_urls = ['http://127.0.0.1:8205/register1_part_B/index.html']
+    start_urls = ['http://127.0.0.1:4243/register1_part_B/ashuti-1-maindata.html']
 
     def parse(self, response):
         trees = response.xpath('//center/table[2]//tr')

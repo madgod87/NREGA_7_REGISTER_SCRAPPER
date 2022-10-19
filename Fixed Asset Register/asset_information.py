@@ -3,7 +3,7 @@ import logging
 
 class AssetSpider(scrapy.Spider):
     name = 'asset'
-    start_urls = ['http://mnregaweb4.nic.in/netnrega/asset_report_dtl.aspx?lflag=eng&state_name=WEST%20BENGAL&state_code=32&district_name=PURULIA&district_code=3214&block_name=HURA&block_code=&panchayat_name=MAGURIA-LALPUR&panchayat_code=3214003009&fin_year=2022-2023&source=national&Digest=WMZVK5AEF7ZsXDVFCXm6Dg']
+    start_urls = ['https://mnregaweb4.nic.in/netnrega/asset_report_dtl.aspx?lflag=eng&state_name=WEST%20BENGAL&state_code=32&district_name=24%20PARGANAS%20SOUTH&district_code=3216&block_name=THAKURPUKUR%20MAHESTOLA&block_code=&panchayat_name=ASUTI-I&panchayat_code=3216014001&fin_year=2022-2023&source=national&Digest=olnxYLoDlbeHoFAcjMHSeg']
 
     def parse(self, response):
         i = 4

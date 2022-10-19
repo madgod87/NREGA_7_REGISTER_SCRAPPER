@@ -9,7 +9,7 @@ options = {'page-size': 'A4'}
 
 class WorkRegister(scrapy.Spider):
     name = "WorkRegister_PartB"
-    start_urls = ['http://127.0.0.1:10642/Register_4_Part_B/Raspunja20-21/index.html']
+    start_urls = ['http://127.0.0.1:5555/Register_4_Part_B/ashita-1-20-21.html']
 
     def parse(self, response):
         trees = response.xpath('//div[3]//div[2]/table//tr')
@@ -25,4 +25,4 @@ class WorkRegister(scrapy.Spider):
                 all_links.append(shortened_url)
 
         print(all_links)
-        pdfkit.from_url(all_links, r"./Raspunja20-21/Raspunja_Register_4_Part_B_20-21.pdf", configuration=config, options=options)
+        pdfkit.from_url(all_links, r"./Register_4_Part_B_20-21.pdf", configuration=config, options=options)
