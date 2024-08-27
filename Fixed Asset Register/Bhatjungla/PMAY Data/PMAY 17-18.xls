@@ -1,0 +1,1285 @@
+<div id="ctl00_ContentPlaceHolder1_PanelPrint">
+	
+
+                                <table style="width: 100%; display: none;">
+                                    <tr>
+                                        <td></td>
+                                        <td align="right" style="width: 40%"><b>G.3 House Sanction vs Work Creation in MGNREGA</b></td>
+                                        <td align="right"><span><b>As On:</b> 23/08/2024 17:09:32</span></td>
+                                    </tr>
+                                </table>
+
+                                <h5 style="margin-top: 0;">For Person Days Generated Please Click the link: &nbsp; &nbsp;<span class="label label-info"><a id="ctl00_ContentPlaceHolder1_mgnregalink" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$mgnregalink&#39;,&#39;&#39;)">Check Person Days</a></span></h5>
+                                
+
+                                
+
+                                <div>
+		<table class="table table-bordered" cellspacing="0" rules="all" border="1" id="ctl00_ContentPlaceHolder1_grdBenDetails" style="height:100%;width:100%;border-collapse:collapse;">
+			<tr class="GridViewScrollHeader" style="color:White;background-color:#78662F;">
+				<th scope="col">S.No.</th><th class="GridViewScrollItemCommon" align="left" scope="col">Registration No.</th><th class="GridViewScrollItemCommon" align="left" scope="col">Name</th><th class="GridViewScrollItemCommon" align="left" scope="col">Father's Name</th><th class="GridViewScrollItemCommon" align="left" scope="col">Job Card No.</th><th class="GridViewScrollItemCommon" align="left" scope="col">Work Code No.</th><th scope="col">No of Days</th><th scope="col">Wage Paid</th>
+			</tr><tr class="GridViewScrollItem" align="right">
+				<td class="GridViewScrollItemCommon">
+                                                1
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl02_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl02$btnBenDetail&#39;,&#39;&#39;)">WB1209869</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                KHAIRUN  BEWA
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                AJID  SK
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-021/262
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1420034
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right" style="background-color:White;">
+				<td class="GridViewScrollItemCommon">
+                                                2
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl03_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl03$btnBenDetail&#39;,&#39;&#39;)">WB1221072</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                TEGBAHADUR TUNGANA
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                RAM BAHADUR TUNGANA
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-009/87
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1461546
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right">
+				<td class="GridViewScrollItemCommon">
+                                                3
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl04_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl04$btnBenDetail&#39;,&#39;&#39;)">WB1242409</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                RANAJIT BISWAS
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                PRAMATH BISWAS
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-018/88
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1507755
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right" style="background-color:White;">
+				<td class="GridViewScrollItemCommon">
+                                                4
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl05_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl05$btnBenDetail&#39;,&#39;&#39;)">WB1247758</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                MADHAB BISWAS
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                SHSHTHI  BISWAS
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-009/88
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1573921
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right">
+				<td class="GridViewScrollItemCommon">
+                                                5
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl06_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl06$btnBenDetail&#39;,&#39;&#39;)">WB1251675</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                JABEDA BEWA
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                ELABAK
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-020/185
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1420387
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right" style="background-color:White;">
+				<td class="GridViewScrollItemCommon">
+                                                6
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl07_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl07$btnBenDetail&#39;,&#39;&#39;)">WB1280753</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                MAINA DURLABH
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                BISWANATH DURLABH
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-017/133
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1489072
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right">
+				<td class="GridViewScrollItemCommon">
+                                                7
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl08_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl08$btnBenDetail&#39;,&#39;&#39;)">WB1289177</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                JELEHAR BEWA
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                NASKAR SK
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-003/113
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1429134
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right" style="background-color:White;">
+				<td class="GridViewScrollItemCommon">
+                                                8
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl09_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl09$btnBenDetail&#39;,&#39;&#39;)">WB1451363</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                MITHU SHIL
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                MANGAL PRAMANIK
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-018/246
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1444563
+                                            </td><td>
+                                                0
+                                            </td><td>
+                                                0
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right">
+				<td class="GridViewScrollItemCommon">
+                                                9
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl10_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl10$btnBenDetail&#39;,&#39;&#39;)">WB1453018</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                FULKALI BIBI
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                TAHIR SK
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-017/160
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1422860
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right" style="background-color:White;">
+				<td class="GridViewScrollItemCommon">
+                                                10
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl11_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl11$btnBenDetail&#39;,&#39;&#39;)">WB1474669</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                DIPALI CHAKRABORTY
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                MANTU BISWAS
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-018/243
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1575740
+                                            </td><td>
+                                                0
+                                            </td><td>
+                                                0
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right">
+				<td class="GridViewScrollItemCommon">
+                                                11
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl12_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl12$btnBenDetail&#39;,&#39;&#39;)">WB1474785</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                SAMARESH GHOSH
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                MANORANJAN GHOSH
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-017/221
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1445067
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right" style="background-color:White;">
+				<td class="GridViewScrollItemCommon">
+                                                12
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl13_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl13$btnBenDetail&#39;,&#39;&#39;)">WB1481947</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                MOMTAJ BIBI
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                ABDUL KORIM SHAHO
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-017/197
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1423203
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right">
+				<td class="GridViewScrollItemCommon">
+                                                13
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl14_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl14$btnBenDetail&#39;,&#39;&#39;)">WB1485248</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                HAMIDUL SK
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                NAWSAD SK
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-001/240
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1423251
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right" style="background-color:White;">
+				<td class="GridViewScrollItemCommon">
+                                                14
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl15_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl15$btnBenDetail&#39;,&#39;&#39;)">WB1494221</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                MINTU  SK
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                MANTU SK
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-020/186
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1426088
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right">
+				<td class="GridViewScrollItemCommon">
+                                                15
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl16_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl16$btnBenDetail&#39;,&#39;&#39;)">WB1503269</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                MASUDA BIBI
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                AJAUDDIN KHAN
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-001/242
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1423491
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right" style="background-color:White;">
+				<td class="GridViewScrollItemCommon">
+                                                16
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl17_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl17$btnBenDetail&#39;,&#39;&#39;)">WB1514033</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                JAYDEB  BISWAS
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                SHACHIN  BISWAS
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-005/125
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1423657
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right">
+				<td class="GridViewScrollItemCommon">
+                                                17
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl18_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl18$btnBenDetail&#39;,&#39;&#39;)">WB1538053</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                SALAM MOLLA
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                MOMON MOLLA
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-001/26
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1424114
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right" style="background-color:White;">
+				<td class="GridViewScrollItemCommon">
+                                                18
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl19_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl19$btnBenDetail&#39;,&#39;&#39;)">WB1540866</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                FAKIR MANDAL
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                SALAM MANDAL
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-020/188
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1424161
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right">
+				<td class="GridViewScrollItemCommon">
+                                                19
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl20_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl20$btnBenDetail&#39;,&#39;&#39;)">WB1544954</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                NAMITA PAL
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                GOUR PAL
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-019/42
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1509527
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right" style="background-color:White;">
+				<td class="GridViewScrollItemCommon">
+                                                20
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl21_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl21$btnBenDetail&#39;,&#39;&#39;)">WB1567907</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                HARADHAN SARKAR
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                ANATH SARKAR
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-012/130
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1615946
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right">
+				<td class="GridViewScrollItemCommon">
+                                                21
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl22_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl22$btnBenDetail&#39;,&#39;&#39;)">WB1587300</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                MAMANI DAS
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                OPI DAS
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-005/197
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1424907
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right" style="background-color:White;">
+				<td class="GridViewScrollItemCommon">
+                                                22
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl23_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl23$btnBenDetail&#39;,&#39;&#39;)">WB1593339</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                MOUSUMI MANDAL
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                KARTIK BAIRAGI
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-012/131
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1424967
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right">
+				<td class="GridViewScrollItemCommon">
+                                                23
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl24_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl24$btnBenDetail&#39;,&#39;&#39;)">WB1598669</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                MINA MAJHI
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                CHALITRA MAJHI
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-011/141
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1425009
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right" style="background-color:White;">
+				<td class="GridViewScrollItemCommon">
+                                                24
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl25_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl25$btnBenDetail&#39;,&#39;&#39;)">WB1637194</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                BEAUTI PANDE
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                DWIJENDRA SARKAR
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-005/55
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1643167
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right">
+				<td class="GridViewScrollItemCommon">
+                                                25
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl26_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl26$btnBenDetail&#39;,&#39;&#39;)">WB1675683</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                NILA PAUL
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                LATE NARAYANCHANDRA PAUL
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-015/100
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1492696
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right" style="background-color:White;">
+				<td class="GridViewScrollItemCommon">
+                                                26
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl27_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl27$btnBenDetail&#39;,&#39;&#39;)">WB1681973</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                RAJKUMAR  MAJHI
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                ULENDAR  MAJHI
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-018/248
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1577798
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right">
+				<td class="GridViewScrollItemCommon">
+                                                27
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl28_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl28$btnBenDetail&#39;,&#39;&#39;)">WB1689884</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                TAPAN DAS
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                HABUL DAS
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-010/152
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1450055
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right" style="background-color:White;">
+				<td class="GridViewScrollItemCommon">
+                                                28
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl29_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl29$btnBenDetail&#39;,&#39;&#39;)">WB1704248</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                GOPAL DURLOV
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                ANATH DURLOV
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-017/223
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1578023
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right">
+				<td class="GridViewScrollItemCommon">
+                                                29
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl30_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl30$btnBenDetail&#39;,&#39;&#39;)">WB1783971</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                FULI DURLABH
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                BABLU DURLABH
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-014/107
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1428235
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right" style="background-color:White;">
+				<td class="GridViewScrollItemCommon">
+                                                30
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl31_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl31$btnBenDetail&#39;,&#39;&#39;)">WB1787063</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                SABITA MONDAL
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                BRAJOBASI SARKAR
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-018/244
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1452080
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right">
+				<td class="GridViewScrollItemCommon">
+                                                31
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl32_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl32$btnBenDetail&#39;,&#39;&#39;)">WB1842492</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                PRADIP GHOSH
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                PALAN GHOSH
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-010/153
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1430294
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right" style="background-color:White;">
+				<td class="GridViewScrollItemCommon">
+                                                32
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl33_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl33$btnBenDetail&#39;,&#39;&#39;)">WB1934671</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                JAMAT ALI MONDAL
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                FAKIRCHAND  MONDAL
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-021/15
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1495157
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right">
+				<td class="GridViewScrollItemCommon">
+                                                33
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl34_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl34$btnBenDetail&#39;,&#39;&#39;)">WB1938451</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                SAHIDA  BIBI
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                BADAL DAFADAR
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-001/257
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1432634
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right" style="background-color:White;">
+				<td class="GridViewScrollItemCommon">
+                                                34
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl35_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl35$btnBenDetail&#39;,&#39;&#39;)">WB1946032</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                BILKIS BISWAS
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                AJIJUL MONDAL
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-020/172
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1432831
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right">
+				<td class="GridViewScrollItemCommon">
+                                                35
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl36_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl36$btnBenDetail&#39;,&#39;&#39;)">WB1987119</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                SALEMA BIBI
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                MUKTAR ALI MONDAL
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-021/263
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1512557
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right" style="background-color:White;">
+				<td class="GridViewScrollItemCommon">
+                                                36
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl37_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl37$btnBenDetail&#39;,&#39;&#39;)">WB1989347</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                CHITTA DAS
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                TARANIKANTA DAS
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-002/168
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1433886
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right">
+				<td class="GridViewScrollItemCommon">
+                                                37
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl38_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl38$btnBenDetail&#39;,&#39;&#39;)">WB2067489</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                TETUL DURLOV
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                NISTHA DURLOV
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-016/57
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1550886
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right" style="background-color:White;">
+				<td class="GridViewScrollItemCommon">
+                                                38
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl39_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl39$btnBenDetail&#39;,&#39;&#39;)">WB2123178</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                PINKU ADHIKARI
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                BHOLANATH ADHIKARI
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-007/42
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1436266
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right">
+				<td class="GridViewScrollItemCommon">
+                                                39
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl40_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl40$btnBenDetail&#39;,&#39;&#39;)">WB2151815</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                PAARESH  DAS
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                KANAI  DAS
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-016/277
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1587379
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right" style="background-color:White;">
+				<td class="GridViewScrollItemCommon">
+                                                40
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl41_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl41$btnBenDetail&#39;,&#39;&#39;)">WB2200821</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                HARI DURLAV
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                SRIPATI DURLAV
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-016/273
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1497942
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right">
+				<td class="GridViewScrollItemCommon">
+                                                41
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl42_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl42$btnBenDetail&#39;,&#39;&#39;)">WB2228399</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                MINHAR BIBI
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                ABDAR HOSSAIN MONDAL
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-003/92
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1588682
+                                            </td><td>
+                                                0
+                                            </td><td>
+                                                0
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right" style="background-color:White;">
+				<td class="GridViewScrollItemCommon">
+                                                42
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl43_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl43$btnBenDetail&#39;,&#39;&#39;)">WB2263222</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                ARATI DAS GHOSH
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                DILIP DAS
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-007/81
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1589276
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right">
+				<td class="GridViewScrollItemCommon">
+                                                43
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl44_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl44$btnBenDetail&#39;,&#39;&#39;)">WB2286201</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                LAKSHI DURLABH
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                ANATH DURLABH
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-017/217
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1471272
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right" style="background-color:White;">
+				<td class="GridViewScrollItemCommon">
+                                                44
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl45_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl45$btnBenDetail&#39;,&#39;&#39;)">WB2286333</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                SUNGALI DURLABH
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                MANMATHO DURLABH
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-017/189
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1471277
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right">
+				<td class="GridViewScrollItemCommon">
+                                                45
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl46_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl46$btnBenDetail&#39;,&#39;&#39;)">WB2287663</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                HALIMA BIBI
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                NUR ALI SK
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-003/9
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1471325
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right" style="background-color:White;">
+				<td class="GridViewScrollItemCommon">
+                                                46
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl47_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl47$btnBenDetail&#39;,&#39;&#39;)">WB2299084</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                SIRAJULSK
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                SURTALI SK
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-001/258
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1471742
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right">
+				<td class="GridViewScrollItemCommon">
+                                                47
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl48_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl48$btnBenDetail&#39;,&#39;&#39;)">WB2319870</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                PALLABI DURLABH
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                DUKHIRAM DURLABH
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-017/128
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1472514
+                                            </td><td>
+                                                0
+                                            </td><td>
+                                                0
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right" style="background-color:White;">
+				<td class="GridViewScrollItemCommon">
+                                                48
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl49_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl49$btnBenDetail&#39;,&#39;&#39;)">WB2330794</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                SUNDARI BIBI
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                RAMJAN MANDAL
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-001/266
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1472950
+                                            </td><td>
+                                                0
+                                            </td><td>
+                                                0
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right">
+				<td class="GridViewScrollItemCommon">
+                                                49
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl50_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl50$btnBenDetail&#39;,&#39;&#39;)">WB2339956</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                SABURI  BIBI
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                MANSUR  ALI BISWAS
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-001/259
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1623799
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right" style="background-color:White;">
+				<td class="GridViewScrollItemCommon">
+                                                50
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl51_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl51$btnBenDetail&#39;,&#39;&#39;)">WB2339964</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                RAHINA KHATUN SHAH
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                MINJUL SK
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-001/263
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1473327
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right">
+				<td class="GridViewScrollItemCommon">
+                                                51
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl52_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl52$btnBenDetail&#39;,&#39;&#39;)">WB2340136</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                ANOWARA BIAWAS
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                SOTEYAR DHABAK
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-001/202
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/34040929
+                                            </td><td>
+                                                0
+                                            </td><td>
+                                                0
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right" style="background-color:White;">
+				<td class="GridViewScrollItemCommon">
+                                                52
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl53_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl53$btnBenDetail&#39;,&#39;&#39;)">WB2340144</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                KOHINUR BIBI SK BEWA
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                DALIL MANDAL
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-001/262
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1590498
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right">
+				<td class="GridViewScrollItemCommon">
+                                                53
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl54_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl54$btnBenDetail&#39;,&#39;&#39;)">WB2343506</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                SHISBHU DURLAH
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                BURIO DURLABH
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-017/222
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1473453
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right" style="background-color:White;">
+				<td class="GridViewScrollItemCommon">
+                                                54
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl55_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl55$btnBenDetail&#39;,&#39;&#39;)">WB2356221</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                ASHA DURLABH
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                PANCHU DURLABH
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-017/220
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1590741
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right">
+				<td class="GridViewScrollItemCommon">
+                                                55
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl56_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl56$btnBenDetail&#39;,&#39;&#39;)">WB2451892</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                NILIMA MANDAL
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                NASIRUDDIN KHAN
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-001/260
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1592182
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right" style="background-color:White;">
+				<td class="GridViewScrollItemCommon">
+                                                56
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl57_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl57$btnBenDetail&#39;,&#39;&#39;)">WB2531765</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                MONIHAR BIBI
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                JAMMABI SK
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-001/99
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1479334
+                                            </td><td>
+                                                0
+                                            </td><td>
+                                                0
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right">
+				<td class="GridViewScrollItemCommon">
+                                                57
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl58_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl58$btnBenDetail&#39;,&#39;&#39;)">WB2545004</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                LAKSHAN  GHOSH
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                LATE NANDA GHOSH
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-010/12
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1479637
+                                            </td><td>
+                                                0
+                                            </td><td>
+                                                0
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right" style="background-color:White;">
+				<td class="GridViewScrollItemCommon">
+                                                58
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl59_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl59$btnBenDetail&#39;,&#39;&#39;)">WB2566365</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                MITHU BIBI
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                JAMEL SK
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-001/116
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1517305
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right">
+				<td class="GridViewScrollItemCommon">
+                                                59
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl60_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl60$btnBenDetail&#39;,&#39;&#39;)">WB2693838</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                RAHIMA  BIBI
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                ALIM SK
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-001/17
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1502966
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right" style="background-color:White;">
+				<td class="GridViewScrollItemCommon">
+                                                60
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl61_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl61$btnBenDetail&#39;,&#39;&#39;)">WB2763569</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                JHUMA SARKAR
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-013/77
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1484815
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right">
+				<td class="GridViewScrollItemCommon">
+                                                61
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl62_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl62$btnBenDetail&#39;,&#39;&#39;)">WB2829309</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                LAXMI GOSWAMI
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-011/241
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1486163
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right" style="background-color:White;">
+				<td class="GridViewScrollItemCommon">
+                                                62
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl63_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl63$btnBenDetail&#39;,&#39;&#39;)">WB2884209</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                AMELA SHIL
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                NARAN SHIL
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-018/245
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1504219
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right">
+				<td class="GridViewScrollItemCommon">
+                                                63
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl64_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl64$btnBenDetail&#39;,&#39;&#39;)">WB2891268</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                PRATIMA BASAK
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                GANESH CHANDRA BASAK
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-018/249
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1555058
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right" style="background-color:White;">
+				<td class="GridViewScrollItemCommon">
+                                                64
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl65_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl65$btnBenDetail&#39;,&#39;&#39;)">WB2901085</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                RABIRANA CHAKRABORTY
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                HRIDAY DURLAV
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-018/247
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1487724
+                                            </td><td>
+                                                0
+                                            </td><td>
+                                                0
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right">
+				<td class="GridViewScrollItemCommon">
+                                                65
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl66_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl66$btnBenDetail&#39;,&#39;&#39;)">WB2912309</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                ARCHANA DAS
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                CHANDRA MHEKHAR DAS
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-020/192
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1504536
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right" style="background-color:White;">
+				<td class="GridViewScrollItemCommon">
+                                                66
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl67_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl67$btnBenDetail&#39;,&#39;&#39;)">WB2940030</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                SARASWATI DAS
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                MAKHAN BASAK
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-017/73
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1596887
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right">
+				<td class="GridViewScrollItemCommon">
+                                                67
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl68_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl68$btnBenDetail&#39;,&#39;&#39;)">WB3005180</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                RUMA  PRAMANIK
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                DILIP  SHIL
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-020/191
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1519824
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right" style="background-color:White;">
+				<td class="GridViewScrollItemCommon">
+                                                68
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl69_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl69$btnBenDetail&#39;,&#39;&#39;)">WB3005249</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                RINKI MAJHI
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                MANORANJAN MAJHI
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-020/190
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1555515
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right">
+				<td class="GridViewScrollItemCommon">
+                                                69
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl70_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl70$btnBenDetail&#39;,&#39;&#39;)">WB3108584</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                RITA MISTRY
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                SHIBCHARAN MISTRY
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-007/80
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1522807
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right" style="background-color:White;">
+				<td class="GridViewScrollItemCommon">
+                                                70
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl71_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl71$btnBenDetail&#39;,&#39;&#39;)">WB3111359</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                JYOTSNA DAS
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                AMULYA PRAMANIK
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-007/71
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/1522915
+                                            </td><td>
+                                                90
+                                            </td><td>
+                                                16200
+                                            </td>
+			</tr>
+		</table>
+	</div>
+                            
+</div>

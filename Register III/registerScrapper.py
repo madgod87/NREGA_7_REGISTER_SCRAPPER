@@ -4,7 +4,7 @@ import requests
 class RegisterscrapperSpider(scrapy.Spider):
     name = 'registerScrapper'
 # Bhandaria Kastekumari GP
-    start_urls = ['https://mnregaweb4.nic.in/netnrega/writereaddata/citizen_out/MW_3216014001_GP_2122_eng.html']
+    start_urls = ['https://mnregaweb4.nic.in/netnrega/writereaddata/citizen_out/MW_3201009004_GP_2021_eng.html']
 
     mrNumbers = []
     countingNumber = 1
@@ -37,13 +37,15 @@ class RegisterscrapperSpider(scrapy.Spider):
                     mainlink = str("http://mnregaweb4.nic.in/netnrega/")
     # Concatinating Both Links
                     final_link = f"{mainlink}{new_str_link}"
-    
                     request_object = requests.get(final_link)
                     response_object = scrapy.Selector(request_object)
             # Declaring All Tree Elements
-                    child_trees = response_object.xpath('//*[@id="ContentPlaceHolder1_grdShowRecords"]//tr')
+                    print("CHeck11111111111")
+                    child_trees = response_object.xpath('//*[@id="ctl00_ContentPlaceHolder1_grdShowRecords"]//tr')
+                    print(child_trees)
             # Looping Over All Tree Elements
                     for child_tree in child_trees:
+                        print("Check22222222222")
             # Creating Iterable Item for Checking Attendance Value
                         attendence = [6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21]
             # Checking Attendance Value
@@ -62,15 +64,15 @@ class RegisterscrapperSpider(scrapy.Spider):
                         else:
             # Declaring Values of New Page
                             demanded_days = i - 5
-                            mr_number = response_object.xpath('//*[@id="ContentPlaceHolder1_lblMsrNo2"]/text()').get()
-                            start_date = response_object.xpath('//*[@id="ContentPlaceHolder1_lbldatefrom"]/text()').get()
-                            end_date = response_object.xpath('//*[@id="ContentPlaceHolder1_lbldateto"]/text()').get()
-                            as_approve_number = response_object.xpath('//*[@id="ContentPlaceHolder1_lblSanctionno"]/text()').get()
-                            as_approval_date = response_object.xpath('//*[@id="ContentPlaceHolder1_lblSanctionDate"]/text()').get()
-                            scheme_code = response_object.xpath('//*[@id="ContentPlaceHolder1_lblWorkCode"]/text()').get()
-                            scheme_name = response_object.xpath('//*[@id="ContentPlaceHolder1_lblWorkName"]/text()').get()
-                            mb_number = response_object.xpath('//*[@id="ContentPlaceHolder1_mbno"]/text()').get()
-                            mb_page_number = response_object.xpath('//*[@id="ContentPlaceHolder1_page_no"]/text()').get()
+                            mr_number = response_object.xpath('//*[@id="ctl00_ContentPlaceHolder1_lblMsrNo2"]/text()').get()
+                            start_date = response_object.xpath('//*[@id="ctl00_ContentPlaceHolder1_lbldatefrom"]/text()').get()
+                            end_date = response_object.xpath('//*[@id="ctl00_ContentPlaceHolder1_lbldateto"]/text()').get()
+                            as_approve_number = response_object.xpath('//*[@id="ctl00_ContentPlaceHolder1_lblSanctionno"]/text()').get()
+                            as_approval_date = response_object.xpath('//*[@id="ctl00_ContentPlaceHolder1_lblSanctionDate"]/text()').get()
+                            scheme_code = response_object.xpath('//*[@id="ctl00_ContentPlaceHolder1_lblWorkCode"]/text()').get()
+                            scheme_name = response_object.xpath('//*[@id="ctl00_ContentPlaceHolder1_lblWorkName"]/text()').get()
+                            mb_number = response_object.xpath('//*[@id="ctl00_ContentPlaceHolder1_mbno"]/text()').get()
+                            mb_page_number = response_object.xpath('//*[@id="ctl00_ContentPlaceHolder1_page_no"]/text()').get()
                             jc_number = child_tree.xpath('.//td[2]//a/text()').get()
                             total_md = str((child_tree.xpath('.//td[$i]//text()', i=i).get()).split()[0])
                             wage_per_day = child_tree.xpath('.//td[$i+1]//text()', i=i).get()

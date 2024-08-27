@@ -3,7 +3,7 @@ import logging
 
 class AssetSpider(scrapy.Spider):
     name = 'asset'
-    start_urls = ['https://mnregaweb4.nic.in/netnrega/asset_report_dtl.aspx?lflag=eng&state_name=WEST%20BENGAL&state_code=32&district_name=24%20PARGANAS%20SOUTH&district_code=3216&block_name=THAKURPUKUR%20MAHESTOLA&block_code=&panchayat_name=ASUTI-I&panchayat_code=3216014001&fin_year=2022-2023&source=national&Digest=olnxYLoDlbeHoFAcjMHSeg']
+    start_urls = ['https://mnregaweb4.nic.in/netnrega/asset_report_dtl.aspx?lflag=eng&state_name=WEST%20BENGAL&state_code=32&district_name=NADIA&district_code=3201&block_name=KRISHNAGAR-I&block_code=&panchayat_name=BHATJUNGLA&panchayat_code=3201009004&fin_year=2024-2025&source=national&Digest=L80lnnn27fHmXMHcW78Y7g']
 
     def parse(self, response):
         i = 4
@@ -30,25 +30,25 @@ class AssetSpider(scrapy.Spider):
 
 
 # Other Scheme Data
-        if response.xpath("//table[3]//tr[7]/td[1]/nobr/p/font[2]/text()").get() is None:
-            sanctiondate = response.xpath("//table[3]//tr[6]/td[1]/nobr/p/font[2]/text()").get()
-            wage = response.xpath("//table[3]//tr[10]/td/table//tr[2]/td[1]/font/text()").get()
-            semiskilled = response.xpath("//table[3]//tr[10]/td/table//tr[2]/td[2]/font/text()").get()
-            skilled = response.xpath("//table[3]//tr[10]/td/table//tr[2]/td[3]/font/text()").get()
-            material = response.xpath("//table[3]//tr[10]/td/table//tr[2]/td[4]/font/a/text()").get()
-            contingency = response.xpath("//table[3]//tr[10]/td/table//tr[2]/td[5]/font/text()").get()
-            total = response.xpath("//table[3]//tr[10]/td/table//tr[2]/td[6]/font/text()").get()
-            mandays = response.xpath('//table[3]//tr[11]/td/table//tr[2]/td[2]/font/text()').get()
+        if response.xpath('//form/table[3]//tr[7]/td[1]/nobr/p/strong/font/text()').get() == "Sanction No. and Sanction Date":
+            sanctiondate = response.xpath('//form/table[3]//tr[7]/td[1]/nobr/p/font[2]/text()').get()
+            wage = response.xpath('//form/table[3]//tr[11]/td/table//tr[2]/td[1]/font/text()').get()
+            semiskilled = response.xpath('//form/table[3]//tr[11]/td/table//tr[2]/td[2]/font/text()').get()
+            skilled = response.xpath("//form/table[3]//tr[11]/td/table//tr[2]/td[3]/font/text()").get()
+            material = response.xpath("//form/table[3]//tr[11]/td/table//tr[2]/td[4]/font/a/text()").get()
+            contingency = response.xpath("//form/table[3]//tr[11]/td/table//tr[2]/td[5]/font/text()").get()
+            total = response.xpath("//form/table[3]//tr[11]/td/table//tr[2]/td[6]/font/text()").get()
+            mandays = response.xpath('//form/table[3]//tr[12]/td/table//tr[2]/td[2]/font/text()').get()
 
         else:
-            sanctiondate = response.xpath("//table[3]//tr[7]/td[1]/nobr/p/font[2]/text()").get()
-            wage = response.xpath("//table[3]//tr[11]/td/table//tr[2]/td[1]/font/text()").get()
-            semiskilled = response.xpath("//table[3]//tr[11]/td/table//tr[2]/td[2]/font/text()").get()
-            skilled = response.xpath("//table[3]//tr[11]/td/table//tr[2]/td[3]/font/text()").get()
-            material = response.xpath("//table[3]//tr[11]/td/table//tr[2]/td[4]/font/a/text()").get()
-            contingency = response.xpath("//table[3]//tr[11]/td/table//tr[2]/td[5]/font/text()").get()
-            total = response.xpath("//table[3]//tr[11]/td/table//tr[2]/td[6]/font/text()").get()
-            mandays = response.xpath('//table[3]//tr[12]/td/table//tr[2]/td[2]/font/text()').get()
+            sanctiondate = response.xpath("//form/table[3]//tr[8]/td[1]/nobr/p/font[2]/text()").get()
+            wage = response.xpath("//form/table[3]//tr[12]/td/table//tr[2]/td[1]/font/text()").get()
+            semiskilled = response.xpath("//form/table[3]//tr[12]/td/table//tr[2]/td[2]/font/text()").get()
+            skilled = response.xpath("//form/table[3]//tr[12]/td/table//tr[2]/td[3]/font/text()").get()
+            material = response.xpath("//form/table[3]//tr[12]/td/table//tr[2]/td[4]/font/a/text()").get()
+            contingency = response.xpath("//form/table[3]//tr[12]/td/table//tr[2]/td[5]/font/text()").get()
+            total = response.xpath("//form/table[3]//tr[12]/td/table//tr[2]/td[6]/font/text()").get()
+            mandays = response.xpath('//form/table[3]//tr[13]/td/table//tr[2]/td[2]/font/text()').get()
         
        # contigency = contingency.replace(u'\xa0', u' ')
         yield {

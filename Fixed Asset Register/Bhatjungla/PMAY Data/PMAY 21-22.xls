@@ -1,0 +1,79 @@
+<div id="ctl00_ContentPlaceHolder1_PanelPrint">
+	
+
+                                <table style="width: 100%; display: none;">
+                                    <tr>
+                                        <td></td>
+                                        <td align="right" style="width: 40%"><b>G.3 House Sanction vs Work Creation in MGNREGA</b></td>
+                                        <td align="right"><span><b>As On:</b> 23/08/2024 17:13:33</span></td>
+                                    </tr>
+                                </table>
+
+                                <h5 style="margin-top: 0;">For Person Days Generated Please Click the link: &nbsp; &nbsp;<span class="label label-info"><a id="ctl00_ContentPlaceHolder1_mgnregalink" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$mgnregalink&#39;,&#39;&#39;)">Check Person Days</a></span></h5>
+                                
+
+                                
+
+                                <div>
+		<table class="table table-bordered" cellspacing="0" rules="all" border="1" id="ctl00_ContentPlaceHolder1_grdBenDetails" style="height:100%;width:100%;border-collapse:collapse;">
+			<tr class="GridViewScrollHeader" style="color:White;background-color:#78662F;">
+				<th scope="col">S.No.</th><th class="GridViewScrollItemCommon" align="left" scope="col">Registration No.</th><th class="GridViewScrollItemCommon" align="left" scope="col">Name</th><th class="GridViewScrollItemCommon" align="left" scope="col">Father's Name</th><th class="GridViewScrollItemCommon" align="left" scope="col">Job Card No.</th><th class="GridViewScrollItemCommon" align="left" scope="col">Work Code No.</th><th scope="col">No of Days</th><th scope="col">Wage Paid</th>
+			</tr><tr class="GridViewScrollItem" align="right">
+				<td class="GridViewScrollItemCommon">
+                                                1
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl02_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl02$btnBenDetail&#39;,&#39;&#39;)">WB1893626</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                PAPIYA SING
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                DULAWL ROY
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-008/56
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/5039522
+                                            </td><td>
+                                                0
+                                            </td><td>
+                                                0
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right" style="background-color:White;">
+				<td class="GridViewScrollItemCommon">
+                                                2
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl03_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl03$btnBenDetail&#39;,&#39;&#39;)">WB4080785</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                SUDHIR SARKAR
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                LATE HARIPADA SARKAR
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-018/358
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/5039735
+                                            </td><td>
+                                                0
+                                            </td><td>
+                                                0
+                                            </td>
+			</tr><tr class="GridViewScrollItem" align="right">
+				<td class="GridViewScrollItemCommon">
+                                                3
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                <a onclick="document.forms[0].target = &#39;_blank&#39;;" id="ctl00_ContentPlaceHolder1_grdBenDetails_ctl04_btnBenDetail" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$grdBenDetails$ctl04$btnBenDetail&#39;,&#39;&#39;)">WB4648192</a>
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                SHILA BISWAS
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                BIMAL BISWAS
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                WB-01-009-004-018/359
+                                            </td><td class="GridViewScrollItemCommon" align="left">
+                                                3201009004/IF/IAY/5039767
+                                            </td><td>
+                                                0
+                                            </td><td>
+                                                0
+                                            </td>
+			</tr>
+		</table>
+	</div>
+                            
+</div>
