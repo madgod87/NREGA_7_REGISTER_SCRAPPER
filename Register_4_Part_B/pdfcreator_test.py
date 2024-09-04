@@ -5,30 +5,9 @@ import scrapy
 import requests
 import time
 from urllib.parse import quote
-import sys
 
-# Check Python version
-if sys.version_info < (3, 10):
-    import pip
-    pip.main(['install', 'platform==1.0.8'])
-
-import platform
-
-# Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-
-path = r"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe"
-config = pdfkit.configuration(wkhtmltopdf=path)
-
-options = {
-    'page-size': 'A4',
-    'javascript-delay': 10000,
-    'no-stop-slow-scripts': '',
-    'enable-local-file-access': ''
-}
-
-class WorkRegister(scrapy.Spider):
-    name = "WorkRegister_PartB"
+class MySpider(scrapy.Spider):
+    name = 'my_spider'
     start_urls = ['http://127.0.0.1:5500/Register_4_Part_B/index20-21.html']
 
     def parse(self, response):
@@ -66,6 +45,8 @@ class WorkRegister(scrapy.Spider):
                 if response.status_code == 200:
                     valid_links.append(url)
                     logging.info(f"URL is reachable: {url}")
+                    # Print the response content to check if the URL is opening
+                    print(response.content)
                 else:
                     logging.warning(f"URL is not reachable (Status code: {response.status_code}): {url}")
             except requests.RequestException as e:
