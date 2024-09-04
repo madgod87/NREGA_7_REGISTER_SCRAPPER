@@ -4,7 +4,7 @@ import requests
 class RegisterscrapperSpider(scrapy.Spider):
     name = 'registerScrapper'
 # Bhandaria Kastekumari GP
-    start_urls = ['https://mnregaweb4.nic.in/netnrega/writereaddata/citizen_out/MW_3201009004_GP_2021_eng.html']
+    start_urls = ['https://mnregaweb4.nic.in/netnrega/writereaddata/citizen_out/MW_3201009004_GP_2223_eng.html']
 
     mrNumbers = []
     countingNumber = 1
