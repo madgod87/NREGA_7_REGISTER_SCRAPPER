@@ -7,6 +7,7 @@ class AssetSpider(scrapy.Spider):
 
     def parse(self, response):
         i = 4
+        # Limit loop to 2500 rows
         while i<2500:
             assetid = response.xpath('//table[2]//tr[$i]/td[2]/text()', i=i).get()
             assetname = response.xpath('//table[2]//tr[$i]/td[3]/text()', i=i).get()
@@ -18,10 +19,15 @@ class AssetSpider(scrapy.Spider):
             urlid = "http://mnregaweb4.nic.in/netnrega/"
             strurl = str(urlid)
             absoluteurl = f"{strurl}{strlink}"
+            
+            # Standard Scrapy Asynchronous Request (Yielding Request)
+            # Unlike 'newFARScrapper.py' which uses synchronous 'requests.get', this uses Scrapy's built-in async engine.
+            # Data from the current row is passed to the callback via 'meta'.
             yield scrapy.Request(url = absoluteurl, callback = self.parse_asset, meta={'asset_id':assetid, 'scheme_code':schemecode, 'asset_name':assetname, 'scheme_name':schemename, 'class_of_asset':classofasset})
             i += 1
             
     def parse_asset(self, response):
+        # Retrieving metadata passed from the main loop
         assetid = response.request.meta['asset_id']
         schemecode = response.request.meta['scheme_code']
         assetname = response.request.meta['asset_name']
@@ -29,7 +35,7 @@ class AssetSpider(scrapy.Spider):
         classofasset = response.request.meta['class_of_asset']
 
 
-# Other Scheme Data
+# Other Scheme Data Extraction logic based on variable label positions
         if response.xpath('//form/table[3]//tr[7]/td[1]/nobr/p/strong/font/text()').get() == "Sanction No. and Sanction Date":
             sanctiondate = response.xpath('//form/table[3]//tr[7]/td[1]/nobr/p/font[2]/text()').get()
             wage = response.xpath('//form/table[3]//tr[11]/td/table//tr[2]/td[1]/font/text()').get()

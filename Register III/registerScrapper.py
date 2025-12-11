@@ -6,16 +6,18 @@ class RegisterscrapperSpider(scrapy.Spider):
 # Bhandaria Kastekumari GP
     start_urls = ['https://mnregaweb4.nic.in/netnrega/writereaddata/citizen_out/MW_3201009004_GP_2223_eng.html']
 
+    # List to track processed Muster Roll (MR) numbers to avoid duplicates
     mrNumbers = []
     countingNumber = 1
+
 # Declaring First Function
     def parse(self, response):
         trees = response.xpath('//table[2]//tr')
-# Looping through Each TREE Element
+# Looping through Each TREE Element (Work Rows)
         for tree in trees:
 # Finding Scheme Name Element
             workname = tree.xpath('.//td/text()').get()
-# Condition to Ignore Scheme Name Element
+# Condition to Ignore Scheme Name Element (headers)
             if workname == " Work Name:":
                 print('Skipped!!')
 # Main Scrapper Section
@@ -25,8 +27,10 @@ class RegisterscrapperSpider(scrapy.Spider):
                 pay_date = tree.xpath('.//td[2]/font/text()').get()
                 amount = tree.xpath('.//td[3]/font/text()').get()
 
+                # Check if this MR number has already been processed in this run
                 if mr_pre_number not in self.mrNumbers:
-
+                    
+                    # Add to list to prevent future processing
                     self.mrNumbers.append(mr_pre_number)
     
     # Converting Link into String
@@ -37,18 +41,21 @@ class RegisterscrapperSpider(scrapy.Spider):
                     mainlink = str("http://mnregaweb4.nic.in/netnrega/")
     # Concatinating Both Links
                     final_link = f"{mainlink}{new_str_link}"
+                    
+                    # Fetching detail page synchronously
                     request_object = requests.get(final_link)
                     response_object = scrapy.Selector(request_object)
-            # Declaring All Tree Elements
+                    
+            # Declaring All Tree Elements (rows in the MR detail table)
                     print("CHeck11111111111")
                     child_trees = response_object.xpath('//*[@id="ctl00_ContentPlaceHolder1_grdShowRecords"]//tr')
                     print(child_trees)
             # Looping Over All Tree Elements
                     for child_tree in child_trees:
                         print("Check22222222222")
-            # Creating Iterable Item for Checking Attendance Value
+            # Creating Iterable Item for Checking Attendance Value (Dynamic Column Search)
                         attendence = [6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21]
-            # Checking Attendance Value
+            # Checking Attendance Value to find the correct column index 'i'
                         for j in attendence:
                             attendence_check = child_tree.xpath('.//th[$j]//text()', j=j).get()
                             if attendence_check == "Total Attendance":

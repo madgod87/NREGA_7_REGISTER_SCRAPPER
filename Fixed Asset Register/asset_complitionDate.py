@@ -13,28 +13,36 @@ class AssetSpider(scrapy.Spider):
         trees = response.xpath('//form/center/table//tr')
         i = 0
         for tree in trees:
+            # Skip the first 3 rows (Headers)
             if i<3:
                 print('skip')
                 i+=1
             else:
+                # Constructing the detail URL
                 fixed_url = 'https://mnregaweb2.nic.in/netnrega/'
                 looped_url = tree.xpath('.//td[5]/font/a/@href').get()
-                looped_url = looped_url[6:]
+                looped_url = looped_url[6:] # removing relative prefix
                 new_url = f"{fixed_url}{looped_url}"
+                
+                # Extracting data to pass to the next callback
                 completion_date = tree.xpath('.//td[7]/font/text()').get()
                 estimated_cost = tree.xpath('.//td[8]/font/text()').get()
                 estimated_material = tree.xpath('.//td[9]/font/text()').get()
                 expenditure_wage = tree.xpath('.//td[10]/font/text()').get()
                 expenditure_material = tree.xpath('.//td[11]/font/text()').get()
+                
+                # Passing extracted data via 'meta' so it's available in 'parse_asset'
                 yield scrapy.Request(url = new_url, callback = self.parse_asset, meta={'completion_date':completion_date, 'estimated_cost':estimated_cost, 'estimated_material':estimated_material, 'expenditure_wage':expenditure_wage, "expenditure_material":expenditure_material})
                 
     def parse_asset(self, response):
+        # Retrieving data passed from the main list 'parse' function
         completion_date = response.request.meta['completion_date']
         estimated_cost = response.request.meta['estimated_cost']
         estimated_material = response.request.meta['estimated_material']
         expenditure_wage = response.request.meta['expenditure_wage']
         expenditure_material = response.request.meta['expenditure_material']
 
+        # Handling different table structures for detail extraction
         if response.xpath("//table[3]//tr[7]/td[1]/nobr/p/font[2]/text()").get() is None:
             scheme_code = response.xpath('//table[3]//tr[2]/td[2]/font[1]/text()').get()
             scheme_name = response.xpath('//table[3]//tr[2]/td[2]/font[2]/text()').get()

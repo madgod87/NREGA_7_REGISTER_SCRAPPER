@@ -22,11 +22,11 @@ class AssetSpider(scrapy.Spider):
 # Declaring First Function
     def parse(self, response):
         trees = response.xpath('//table[2]//tr')
-# Looping through Each TREE Element
+# Looping through Each TREE Element (Row in the table)
         for tree in trees:
 # Finding Scheme Name Element
             workname = tree.xpath('.//td/text()').get()
-# Condition to Ignore Scheme Name Element
+# Condition to Ignore Scheme Name Element (if it matches header or empty label)
             if workname == " Work Name:":
                 print('Skipped!!')
 # Main Scrapper Section
@@ -37,41 +37,45 @@ class AssetSpider(scrapy.Spider):
                 amount = tree.xpath('.//td[3]/font/text()').get()
 # Converting Link into String
                 strlink = str(link)
-# Deducting the first 6(../../) characters from the link
+# Deducting the first 6(../../) characters from the link to make it relative to root
                 new_str_link = strlink[6:]
 # Converting & Declaring Prefix of the Link
                 mainlink = str("http://mnregaweb4.nic.in/netnrega/")
-# Concatinating Both Links
+# Concatinating Both Links to form absolute URL
                 final_link = f"{mainlink}{new_str_link}"
 
+                # Requesting the detail page (MR page)
                 yield scrapy.Request(url = final_link, callback= self.parse_mr, meta={'mr_pre_number':mr_pre_number,'paydate':pay_date,'amount':amount})
-# Declaring Second Function
+# Declaring Second Function for parsing Muster Roll (MR) details
     def parse_mr(self, response):
-# Declaring All Tree Elements
+# Declaring All Tree Elements (rows in the MR table)
         child_trees = response.xpath('//*[@id="ContentPlaceHolder1_grdShowRecords"]//tr')
 # Looping Over All Tree Elements
         for child_tree in child_trees:
 # Creating Iterable Item for Checking Attendance Value
+# The 'Total Attendance' column can shift, so we check columns 6 to 21
             attendence = [6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21]
-# Checking Attendance Value
+# Checking Attendance Value dynamically
             for j in attendence:
                 attendence_check = child_tree.xpath('.//th[$j]//text()', j=j).get()
                 if attendence_check == "Total Attendance":
-# Assigning & Declaring Global Attendance Value
+# Assigning & Declaring Global Attendance Value index 'i' to be used later
                     global i
                     i = j
 # Declaring Name Value
             name = child_tree.xpath('.//td[2]//text()').get()
-# Checking & Skipping Unwanted Name Values
+# Checking & Skipping Unwanted Name Values (Headers or Totals)
             if name is None or name == "Daily Attendence":
                 print('REJECTED')
-# Assigning Other Values with Global Attendance Value
+# Assigning Other Values using the discovered Global Attendance Value index 'i'
             else:
                 mr_pre_number = response.meta['mr_pre_number']
                 pay_date = response.request.meta['paydate']
                 amount = response.meta['amount']
 # Declaring Values of New Page
+                # Calculating Demanded Days relative to attendance column
                 demanded_days = i - 5
+                # Extracting header details from the MR page
                 mr_number = response.xpath('//*[@id="ContentPlaceHolder1_lblMsrNo2"]/text()').get()
                 start_date = response.xpath('//*[@id="ContentPlaceHolder1_lbldatefrom"]/text()').get()
                 end_date = response.xpath('//*[@id="ContentPlaceHolder1_lbldateto"]/text()').get()
@@ -81,6 +85,8 @@ class AssetSpider(scrapy.Spider):
                 scheme_name = response.xpath('//*[@id="ContentPlaceHolder1_lblWorkName"]/text()').get()
                 mb_number = response.xpath('//*[@id="ContentPlaceHolder1_mbno"]/text()').get()
                 mb_page_number = response.xpath('//*[@id="ContentPlaceHolder1_page_no"]/text()').get()
+                
+                # Extracting row-specific details using 'i'
                 jc_number = child_tree.xpath('.//td[2]//a/text()').get()
                 total_md = str((child_tree.xpath('.//td[$i]//text()', i=i).get()).split()[0])
                 wage_per_day = child_tree.xpath('.//td[$i+1]//text()', i=i).get()
